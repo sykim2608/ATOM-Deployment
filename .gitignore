@@ -1,1 +1,10 @@
 # Created by .ignore support plugin (hsz.mobi)
+.idea/.gitignore
+.idea/azureSettings.xml
+.idea/compiler.xml
+.idea/encodings.xml
+.idea/misc.xml
+ATOM-Deployment.iml
+pom.xml
+src/
+target/
