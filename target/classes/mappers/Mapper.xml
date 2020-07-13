@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper">
+    <!-- Searching of the deployment group list -->
+    <select id="list" resultType="com.example.atom.model.DeploymentGroup">
+        select
+        *
+        from deployment
+    </select>
+
+    <!-- Creating of the deployment group-->
+<!--    <insert id="insert" parameterType="com.example.atom.model.DeploymentGroup">-->
+<!--    INSERT INTO-->
+<!--    deployment(serviceId, serviceName, architecture, description, status, date)-->
+<!--    VALUES(#{serviceId}, #{serviceName}, #{architecture}, #{description}, #{status}, sysdate())-->
+<!--    </insert>-->
+</mapper>
