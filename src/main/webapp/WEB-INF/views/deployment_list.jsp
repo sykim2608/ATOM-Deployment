@@ -1,11 +1,11 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>ATOM</title>
-
   <script src="../../scripts/atom/jquery.1.11.2.min.js"></script>
   <!-- datetime, date, time -->
   <script src="../../scripts/atom/datetimepicker.moment.js"></script>
@@ -16,8 +16,29 @@
   <script src="../../scripts/atom/ui_common.js"></script>
   <link rel="shortcut icon" type="image/x-icon" href="../../images/atom/favicon.ico">
   <link rel="stylesheet" href="../../styles/atom/style.css">
+  <!-- Search 버튼 클릭 시-->
   <script>
+    function searchClick() {
+        $("#tbodyList").empty();
+        <c:forEach items="${list}" var="list">
+        var id = "${list.serviceId}"
+        var name = "${list.serviceName}"
+        var architecture = "${list.architecture}"
+        var description = "${list.description}"
+        var status = "${list.status}"
+        var date = "${list.date}"
+        $("#tbodyList").append("<tr><td>"+id+"</td><td>"+name+"</td><td>"+architecture+"</td><td>"+description+"</td><td><span class="+'"'+"state color_03"+'"'+">"
+        +status+"</td><td>"+date+"</td></tr>");
+        </c:forEach>
+      }
   </script>
+  <!-- 로딩 시 (수정 필요) -->
+    <script type="text/javascript">
+        $(document).ready(function() {
+           $(".load_wrap").fadeOut();
+         });
+    </script>
+
 </head>
 
 <body>
@@ -72,7 +93,7 @@
             </table>
           </div>
           <div class="btn_box">
-            <button type="button" class="btn search"> Search </button>
+            <button type="button" class="btn search" onclick="searchClick()"> Search </button>
           </div>
         </div>
         <div class="board_top">
@@ -118,7 +139,7 @@
             </table>
           </div>
           <div class="tbody">
-            <table>
+            <table id="tableId">
               <colgroup>
                 <col style="width:14%;">
                 <col style="width:17%;">
@@ -127,19 +148,25 @@
                 <col style="width:14%;">
                 <col style="width:14%;">
               </colgroup>
-              <tbody>
-                <tr>
-                  <td>SP1001</td>
-                  <td>Smart parking</td>
-                  <td>manufacturing</td>
-                  <td>SKT parking service</td>
-                  <td><span class="state color_01">Creating</span></td>
-                  <td>02.28.2018 00:00:00</td>
-                </tr>
-              </tbody>
+              <tbody id="tbodyList" >
+                <c:set var="list" value="${list}"/>
+                <c:if test="${empty list}">
+                    <div class="no_data">
+                        There is no Data.
+                    </div>
+                </c:if>
+                </tbody>
             </table>
           </div>
         </div>
+        <!-- Loading
+                <div class="table type_03 y_scroll">
+                  <div class="load_wrap">
+                    <div class="loading"><span></span></div>
+                  </div>
+                </div> -->
+
+
         <div class="cont_footer type_01">
           <div class="paging">
             <ul>
