@@ -19,7 +19,11 @@
   <!-- Search 버튼 클릭 시-->
   <script>
     function searchClick() {
+        document.getElementById("loading").style.display="block";
         $("#tbodyList").empty();
+        var selectOption = document.getElementById("selectLine").value;
+        //alert(selectOption);
+        //var endValue = '${selectOption}';
         <c:forEach items="${list}" var="list">
         var id = "${list.serviceId}"
         var name = "${list.serviceName}"
@@ -28,19 +32,60 @@
         var status = "${list.status}"
         var date = "${list.date}"
         $("#tbodyList").append("<tr><td>"+id+"</td><td>"+name+"</td><td>"+architecture+"</td><td>"+description+"</td><td><span class="+'"'+"state color_03"+'"'+">"
-        +status+"</td><td>"+date+"</td></tr>");
+                                        +status+"</td><td>"+date+"</td></tr>");
         </c:forEach>
+        loading_hide();
       }
   </script>
-  <!-- 로딩 시 (수정 필요) -->
-    <script type="text/javascript">
-        $(document).ready(function() {
-           $(".load_wrap").fadeOut();
-         });
-    </script>
+  <script>
+    function loading_hide() {
+        $(this).ready(function(){
+            $(".load_wrap").fadeOut();
+        })
+    }
+  </script>
+
+  <!-- ajax -->
+  <script>
+  $(function() {
+    $('#searchBtn').click(function() {
+       var date2 = new Date("2017-03-17T09:38:51.249Z")
+        var form = {"serviceId":"***0001","serviceName":"ACaaS","architecture":"Security","description":"SKT ACaaS Service","status":"Success","date":"2020-07-14T16:55:17.000+0000"};
+        $.ajax({
+            type:"POST",
+            url: "/testAjax",
+            header:{
+              "Content-Type":"application/json",  //Content-Type 설정
+              "X-HTTP-Method-Override":"POST"},
+            data: form,
+            succsess:function(data) {
+              alert("success" + data);
+              //$('#tbodyList').append(data);
+            },
+            error: function() {
+              alert("error");
+            },
+            complete: function() {
+              alert("complete");
+            }
+        });
+        // $.ajax({
+        //   type:"GET",
+        //   url: "test",
+        //   dataType: "json",
+        //   error: function() {
+        //     alert("fail");
+        //   }
+        //   succsess: function(data) {
+        //     alert(data);
+        //   }
+
+        // });
+    });
+  });
+  </script>
 
 </head>
-
 <body>
   <div class="header"></div>
   <div class="wrap">
@@ -93,7 +138,7 @@
             </table>
           </div>
           <div class="btn_box">
-            <button type="button" class="btn search" onclick="searchClick()"> Search </button>
+            <button id="searchBtn"type="button" class="btn search" onclick="searchClick()"> Search </button>
           </div>
         </div>
         <div class="board_top">
@@ -103,10 +148,10 @@
           </div>
           <div class="cell nth_02 option_box">
             <div class="select type_03 line">
-              <select>
-                <option value="1">10 Line</option>
-                <option value="2">50 Line</option>
-                <option value="3">100 Line</option>
+              <select id="selectLine" name="myselect">
+                <option value="5">5 Line</option>
+                <option value="10">10 Line</option>
+                <option value="100">100 Line</option>
               </select>
             </div>
             <button class="btn icon type_03 s" type="button" title="Download">
@@ -148,23 +193,23 @@
                 <col style="width:14%;">
                 <col style="width:14%;">
               </colgroup>
-              <tbody id="tbodyList" >
-                <c:set var="list" value="${list}"/>
+              <tbody id="tbodyList">
+                <!-- <c:set var="list" value="${list}"/>
                 <c:if test="${empty list}">
                     <div class="no_data">
                         There is no Data.
                     </div>
-                </c:if>
+                </c:if>  -->
                 </tbody>
             </table>
           </div>
         </div>
-        <!-- Loading
-                <div class="table type_03 y_scroll">
+        <!-- Loading -->
+                <div class="table type_03 y_scroll" style="display:none" id="loading">
                   <div class="load_wrap">
                     <div class="loading"><span></span></div>
                   </div>
-                </div> -->
+                </div>
 
 
         <div class="cont_footer type_01">
@@ -206,8 +251,8 @@
           </div>
         </div>
         <!-- Loading -->
-        <div class="table type_03 y_scroll">
-          <div class="load_wrap">
+        <div class="table type_03 y_scroll" style="display:none">
+          <div class="load_wrap" >
             <div class="loading"><span></span></div>
           </div>
         </div>
