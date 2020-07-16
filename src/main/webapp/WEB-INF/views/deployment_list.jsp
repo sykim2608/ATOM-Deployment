@@ -16,6 +16,7 @@
   <script src="../../scripts/atom/ui_common.js"></script>
   <link rel="shortcut icon" type="image/x-icon" href="../../images/atom/favicon.ico">
   <link rel="stylesheet" href="../../styles/atom/style.css">
+  <!-- 첫 페이지 로딩 시 -->
   <script>
         $(document).ready(function(){
             $(".load_wrap").remove();
@@ -28,16 +29,81 @@
                 <c:if test="${empty list}">
                   $("#tbodyClass").append("<div class=" +  '"no_data"' + ">There is no Data.</div>");                
                 </c:if>
-               for(var i=0 in data) {
-                //alert(data[i].serviceId);
-                $("#tbodyList").append("<tr><td>"+data[i].serviceId+"</td><td>"+data[i].serviceName+"</td><td>"+data[i].architecture+"</td><td>"+data[i].description+"</td><td><span class="+'"'+"state color_03"+'"'+">" +data[i].status+"</td><td>"+data[i].date+"</td></tr>");
+                var cnt = $("#selectLine option:checked").val();
+                var total = 0;
+                for(var i=0 in data) {
+                if(i == cnt) break;
+                total++;
+                var dates = moment(data[i].date).utc().format('MM.DD.YYYY HH:mm:ss');
+                $("#tbodyList").append("<tr onclick=" + '"' + "trClick(this);" + '"' +"><td>"+data[i].serviceId+"</td><td>"+data[i].serviceName+"</td><td>"+data[i].architecture+"</td><td>"+data[i].description+"</td><td><span class="+'"'+"state color_03"+'"'+">" +data[i].status+"</td><td>"+dates+"</td></tr>");
+                }
+                $("#total_result").append("<span class=" + '"value"' + "><em>" + total + "</em>rows</span>");
                },
                error: function() {
                 alert("error");
                }
             });
-        })
+        });
   </script>
+  <!-- Line select option 변경 시 -->
+  <script>
+    $(function() {
+      $("#selectLine").change(function() {
+        $("#tbodyList").empty();
+        $(".value").remove();
+        $.ajax({
+               type:"GET",
+               url: "/testAjax",
+               dataType: "json",
+               success: function(data) {
+               <c:set var="list" value = "${list}"/>
+                <c:if test="${empty list}">
+                  $("#tbodyClass").append("<div class=" +  '"no_data"' + ">There is no Data.</div>");                
+                </c:if>
+                var cnt = $("#selectLine option:checked").val();
+                var total = 0;
+                for(var i=0 in data) {
+                if(i == cnt) break;
+                total++;
+                var dates = moment(data[i].date).utc().format('MM.DD.YYYY HH:mm:ss');
+                $("#tbodyList").append("<tr onclick=" + '"' + "trClick(this);" + '"' +"><td>"+data[i].serviceId+"</td><td>"+data[i].serviceName+"</td><td>"+data[i].architecture+"</td><td>"+data[i].description+"</td><td><span class="+'"'+"state color_03"+'"'+">" +data[i].status+"</td><td>"+dates+"</td></tr>");
+                }
+                $("#total_result").append("<span class=" + '"value"' + "><em>" + total + "</em>rows</span>");
+               },
+               error: function() {
+                alert("error");
+               }
+            });
+      });
+    });
+  </script>
+  <!-- Table TR 버튼 클릭 시 (삭제 기능) -->
+  <script>
+    function trClick(obj) {
+       var tr = $(obj);
+       alert(obj.getAttribute("name"));
+       var result = confirm("삭제하시겠습니까?");
+      if(result) {
+        tr.remove();
+        //db 삭제 
+        // $.ajax({
+        //   type"DELETE",
+        //   dataType="json",
+        //   data: {"serviceId":tr.serviceId},
+        //   url: "",
+        //   success: function() {
+        //     alert("delete success");
+        //   },
+        //   error: function() {
+        //     alert("delete fail");
+        //   }
+        // });
+      }
+      else {
+      }
+    }
+  </script>
+
 </head>
 <body>
   <div class="header"></div>
@@ -95,9 +161,9 @@
           </div>
         </div>
         <div class="board_top">
-          <div class="cell nth_01 total_result">
+          <div class="cell nth_01 total_result" id="total_result">
             Total List
-            <span class="value"><em>123,124,124</em>rows</span>
+            <!-- <span class="value"><em>123,124,124</em>rows</span> -->
           </div>
           <div class="cell nth_02 option_box">
             <div class="select type_03 line">
@@ -136,8 +202,10 @@
               </thead>
             </table>
           </div>
-          <div class="tbody" id="tbodyClass">
+          <div class="tbody" id="tbodyClass">     
+          <!-- ***table *** -->        
             <table id="tableId">
+              <!-- <tr name="hi" onclick="trClick(this);"><td>test</td></tr> -->
               <colgroup>
                 <col style="width:14%;">
                 <col style="width:17%;">
@@ -147,7 +215,6 @@
                 <col style="width:14%;">
               </colgroup>
               <tbody id="tbodyList">
-                 
                 </tbody>
             </table>
           </div>
