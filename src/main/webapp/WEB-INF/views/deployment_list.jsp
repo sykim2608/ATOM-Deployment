@@ -16,75 +16,25 @@
   <script src="../../scripts/atom/ui_common.js"></script>
   <link rel="shortcut icon" type="image/x-icon" href="../../images/atom/favicon.ico">
   <link rel="stylesheet" href="../../styles/atom/style.css">
-  <!-- Search 버튼 클릭 시-->
   <script>
-    function searchClick() {
-        document.getElementById("loading").style.display="block";
-        $("#tbodyList").empty();
-        var selectOption = document.getElementById("selectLine").value;
-        //alert(selectOption);
-        //var endValue = '${selectOption}';
-        <c:forEach items="${list}" var="list">
-        var id = "${list.serviceId}"
-        var name = "${list.serviceName}"
-        var architecture = "${list.architecture}"
-        var description = "${list.description}"
-        var status = "${list.status}"
-        var date = "${list.date}"
-        $("#tbodyList").append("<tr><td>"+id+"</td><td>"+name+"</td><td>"+architecture+"</td><td>"+description+"</td><td><span class="+'"'+"state color_03"+'"'+">"
+        $(document).ready(function(){
+            $(".load_wrap").remove();    
+            <c:set var="list" value = "${list}"/>
+              <c:if test="${empty list}">
+                $("#tbodyClass").append("<div class=" +  '"no_data"' + ">There is no Data.</div>");                
+              </c:if> 
+              <c:forEach items="${list}" var="list">
+              var id = "${list.serviceId}"
+              var name = "${list.serviceName}"
+              var architecture = "${list.architecture}"
+              var description = "${list.description}"
+              var status = "${list.status}"
+              var date = "${list.date}"
+              $("#tbodyList").append("<tr><td>"+id+"</td><td>"+name+"</td><td>"+architecture+"</td><td>"+description+"</td><td><span class="+'"'+"state color_03"+'"'+">"
                                         +status+"</td><td>"+date+"</td></tr>");
-        </c:forEach>
-        loading_hide();
-      }
-  </script>
-  <script>
-    function loading_hide() {
-        $(this).ready(function(){
-            $(".load_wrap").fadeOut();
+              </c:forEach>
         })
-    }
   </script>
-
-  <!-- ajax -->
-  <script>
-  $(function() {
-    $('#searchBtn').click(function() {
-       var date2 = new Date("2017-03-17T09:38:51.249Z")
-        var form = {"serviceId":"***0001","serviceName":"ACaaS","architecture":"Security","description":"SKT ACaaS Service","status":"Success","date":"2020-07-14T16:55:17.000+0000"};
-        $.ajax({
-            type:"POST",
-            url: "/testAjax",
-            header:{
-              "Content-Type":"application/json",  //Content-Type 설정
-              "X-HTTP-Method-Override":"POST"},
-            data: form,
-            succsess:function(data) {
-              alert("success" + data);
-              //$('#tbodyList').append(data);
-            },
-            error: function() {
-              alert("error");
-            },
-            complete: function() {
-              alert("complete");
-            }
-        });
-        // $.ajax({
-        //   type:"GET",
-        //   url: "test",
-        //   dataType: "json",
-        //   error: function() {
-        //     alert("fail");
-        //   }
-        //   succsess: function(data) {
-        //     alert(data);
-        //   }
-
-        // });
-    });
-  });
-  </script>
-
 </head>
 <body>
   <div class="header"></div>
@@ -138,7 +88,7 @@
             </table>
           </div>
           <div class="btn_box">
-            <button id="searchBtn"type="button" class="btn search" onclick="searchClick()"> Search </button>
+            <button id="searchBtn"type="button" class="btn search"> Search </button>
           </div>
         </div>
         <div class="board_top">
@@ -183,7 +133,7 @@
               </thead>
             </table>
           </div>
-          <div class="tbody">
+          <div class="tbody" id="tbodyClass">
             <table id="tableId">
               <colgroup>
                 <col style="width:14%;">
@@ -194,18 +144,13 @@
                 <col style="width:14%;">
               </colgroup>
               <tbody id="tbodyList">
-                <!-- <c:set var="list" value="${list}"/>
-                <c:if test="${empty list}">
-                    <div class="no_data">
-                        There is no Data.
-                    </div>
-                </c:if>  -->
+                 
                 </tbody>
             </table>
           </div>
         </div>
         <!-- Loading -->
-                <div class="table type_03 y_scroll" style="display:none" id="loading">
+                <div class="table type_03 y_scroll" id="loading">
                   <div class="load_wrap">
                     <div class="loading"><span></span></div>
                   </div>
@@ -232,7 +177,7 @@
         </div>
 
         <!-- Loading중 일때-->
-        <div class="board_top">
+<!--         <div class="board_top">
           <div class="cell nth_01 total_result">
             Total List
             <span class="value"><em>0</em>rows</span>
@@ -249,17 +194,17 @@
               <i class="download"></i>Download
             </button>
           </div>
-        </div>
+        </div> -->
         <!-- Loading -->
-        <div class="table type_03 y_scroll" style="display:none">
+<!--         <div class="table type_03 y_scroll" style="display:none">
           <div class="load_wrap" >
             <div class="loading"><span></span></div>
           </div>
         </div>
-        <br>
+        <br> -->
 
         <!-- 검색결과 내용이 없을때 -->
-        <div class="board_top">
+<!--         <div class="board_top">
           <div class="cell nth_01 total_result">
             Total List
             <span class="value"><em>0</em>rows</span>
@@ -299,17 +244,17 @@
                 </tr>
               </thead>
             </table>
-          </div>
-          <!-- 검색결과 없음 -->
-          <div class="no_data">
+          </div> -->
+<!--           검색결과 없음
+           <div class="no_data">
             There is no Data.
           </div>
         </div>
 
-      </div>
-      <!--//cont_wrap-->
+      </div> -->
+      <!--//cont_wrap
     </div>
-  </div>
+  </div> -->
 </body>
 
 </html>
