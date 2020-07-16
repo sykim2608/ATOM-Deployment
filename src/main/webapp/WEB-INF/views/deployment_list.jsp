@@ -18,21 +18,24 @@
   <link rel="stylesheet" href="../../styles/atom/style.css">
   <script>
         $(document).ready(function(){
-            $(".load_wrap").remove();    
-            <c:set var="list" value = "${list}"/>
-              <c:if test="${empty list}">
-                $("#tbodyClass").append("<div class=" +  '"no_data"' + ">There is no Data.</div>");                
-              </c:if> 
-              <c:forEach items="${list}" var="list">
-              var id = "${list.serviceId}"
-              var name = "${list.serviceName}"
-              var architecture = "${list.architecture}"
-              var description = "${list.description}"
-              var status = "${list.status}"
-              var date = "${list.date}"
-              $("#tbodyList").append("<tr><td>"+id+"</td><td>"+name+"</td><td>"+architecture+"</td><td>"+description+"</td><td><span class="+'"'+"state color_03"+'"'+">"
-                                        +status+"</td><td>"+date+"</td></tr>");
-              </c:forEach>
+            $(".load_wrap").remove();
+            $.ajax({   
+               type:"GET",
+               url: "/testAjax",
+               dataType: "json",
+               success: function(data) {
+               <c:set var="list" value = "${list}"/>
+                <c:if test="${empty list}">
+                  $("#tbodyClass").append("<div class=" +  '"no_data"' + ">There is no Data.</div>");                
+                </c:if>
+               for(var i=0 in data) {
+                //alert(data[i].serviceId);
+                $("#tbodyList").append("<tr><td>"+data[i].serviceId+"</td><td>"+data[i].serviceName+"</td><td>"+data[i].architecture+"</td><td>"+data[i].description+"</td><td><span class="+'"'+"state color_03"+'"'+">" +data[i].status+"</td><td>"+data[i].date+"</td></tr>");
+               },
+               error: function() {
+                alert("error");
+               }
+            });
         })
   </script>
 </head>

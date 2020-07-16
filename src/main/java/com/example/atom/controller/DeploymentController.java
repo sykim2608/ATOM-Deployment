@@ -16,15 +16,9 @@ public class DeploymentController {
     @Autowired
     private DeploymentService deploymentService;
 
-    @RequestMapping(value="/test", method = RequestMethod.GET)
-    public @ResponseBody List<DeploymentGroup> jspTest() throws Exception {
+    @RequestMapping(value="/testAjax", method= RequestMethod.GET)
+    public @ResponseBody List<DeploymentGroup> testAjax() throws Exception {
         return deploymentService.getList();
-    }
-
-    @RequestMapping(value="/testAjax", method= RequestMethod.POST)
-    @ResponseBody
-    public String testAjax(@RequestBody DeploymentGroup deploymentGroup) {
-        return deploymentGroup.getServiceId();
     }
 
     @RequestMapping("/deployment")
