@@ -19,30 +19,29 @@
   <!-- 첫 페이지 로딩 시 -->
   <script>
         $(document).ready(function(){
-            $(".load_wrap").remove();
-            $.ajax({   
-               type:"GET",
-               url: "/testAjax",
-               dataType: "json",
-               success: function(data) {
-               <c:set var="list" value = "${list}"/>
-                <c:if test="${empty list}">
-                  $("#tbodyClass").append("<div class=" +  '"no_data"' + ">There is no Data.</div>");                
-                </c:if>
-                var cnt = $("#selectLine option:checked").val();
-                var total = 0;
-                for(var i=0 in data) {
+          $(".load_wrap").remove();
+          $.ajax({   
+             type:"GET",
+             url: "/testAjax",
+             dataType: "json",
+             success: function(data) {
+              if(data == null) {
+                $("#tbodyList").append("<div class=" +  '"no_data"' + ">There is no Data.</div>");
+              }                              
+              var cnt = $("#selectLine option:checked").val();
+              var total = 0;
+              for(var i=0 in data) {
                 if(i == cnt) break;
                 total++;
                 var dates = moment(data[i].date).utc().format('MM.DD.YYYY HH:mm:ss');
-                $("#tbodyList").append("<tr onclick=" + '"' + "trClick(this);" + '"' +"><td>"+data[i].serviceId+"</td><td>"+data[i].serviceName+"</td><td>"+data[i].architecture+"</td><td>"+data[i].description+"</td><td><span class="+'"'+"state color_03"+'"'+">" +data[i].status+"</td><td>"+dates+"</td></tr>");
-                }
-                $("#total_result").append("<span class=" + '"value"' + "><em>" + total + "</em>rows</span>");
-               },
-               error: function() {
-                alert("error");
-               }
-            });
+                $("#tbodyList").append("<tr name=" + '"' + data[i].serviceId +'"'+"onclick=" + '"' + "trClick(this);" + '"' +"><td>"+data[i].serviceId+"</td><td>"+data[i].serviceName+"</td><td>"+data[i].architecture+"</td><td>"+data[i].description+"</td><td><span class="+'"'+"state color_03"+'"'+">" +data[i].status+"</td><td>"+dates+"</td></tr>");
+              }
+              $("#total_result").append("<span class=" + '"value"' + "><em>" + total + "</em>rows</span>");
+             },
+             error: function() {
+              alert("error");
+             }
+          });
         });
   </script>
   <!-- Line select option 변경 시 -->
@@ -52,28 +51,27 @@
         $("#tbodyList").empty();
         $(".value").remove();
         $.ajax({
-               type:"GET",
-               url: "/testAjax",
-               dataType: "json",
-               success: function(data) {
-               <c:set var="list" value = "${list}"/>
-                <c:if test="${empty list}">
-                  $("#tbodyClass").append("<div class=" +  '"no_data"' + ">There is no Data.</div>");                
-                </c:if>
-                var cnt = $("#selectLine option:checked").val();
-                var total = 0;
-                for(var i=0 in data) {
-                if(i == cnt) break;
-                total++;
-                var dates = moment(data[i].date).utc().format('MM.DD.YYYY HH:mm:ss');
-                $("#tbodyList").append("<tr onclick=" + '"' + "trClick(this);" + '"' +"><td>"+data[i].serviceId+"</td><td>"+data[i].serviceName+"</td><td>"+data[i].architecture+"</td><td>"+data[i].description+"</td><td><span class="+'"'+"state color_03"+'"'+">" +data[i].status+"</td><td>"+dates+"</td></tr>");
-                }
-                $("#total_result").append("<span class=" + '"value"' + "><em>" + total + "</em>rows</span>");
-               },
-               error: function() {
-                alert("error");
-               }
-            });
+          type:"GET",
+          url: "/testAjax",
+          dataType: "json",
+          success: function(data) {
+            if(data == null) {
+              $("#tbodyList").append("<div class=" +  '"no_data"' + ">There is no Data.</div>");
+            } 
+            var cnt = $("#selectLine option:checked").val();
+            var total = 0;
+            for(var i=0 in data) {
+              if(i == cnt) break;
+              total++;
+              var dates = moment(data[i].date).utc().format('MM.DD.YYYY HH:mm:ss');
+              $("#tbodyList").append("<tr name=" + '"' + data[i].serviceId +'"'+"onclick=" + '"' + "trClick(this);" + '"' +"><td>"+data[i].serviceId+"</td><td>"+data[i].serviceName+"</td><td>"+data[i].architecture+"</td><td>"+data[i].description+"</td><td><span class="+'"'+"state color_03"+'"'+">" +data[i].status+"</td><td>"+dates+"</td></tr>");
+            }
+            $("#total_result").append("<span class=" + '"value"' + "><em>" + total + "</em>rows</span>");
+           },
+           error: function() {
+            alert("error");
+           }
+        });
       });
     });
   </script>
@@ -225,8 +223,6 @@
                     <div class="loading"><span></span></div>
                   </div>
                 </div>
-
-
         <div class="cont_footer type_01">
           <div class="paging">
             <ul>
@@ -245,86 +241,5 @@
             <button type="button" class="btn type_01 primary">Create</button>
           </div>
         </div>
-
-        <!-- Loading중 일때-->
-<!--         <div class="board_top">
-          <div class="cell nth_01 total_result">
-            Total List
-            <span class="value"><em>0</em>rows</span>
-          </div>
-          <div class="cell nth_02 option_box">
-            <div class="select type_03 line">
-              <select>
-                <option value="1">10 Line</option>
-                <option value="2">50 Line</option>
-                <option value="3">100 Line</option>
-              </select>
-            </div>
-            <button class="btn icon type_03 s" type="button" title="Download">
-              <i class="download"></i>Download
-            </button>
-          </div>
-        </div> -->
-        <!-- Loading -->
-<!--         <div class="table type_03 y_scroll" style="display:none">
-          <div class="load_wrap" >
-            <div class="loading"><span></span></div>
-          </div>
-        </div>
-        <br> -->
-
-        <!-- 검색결과 내용이 없을때 -->
-<!--         <div class="board_top">
-          <div class="cell nth_01 total_result">
-            Total List
-            <span class="value"><em>0</em>rows</span>
-          </div>
-          <div class="cell nth_02 option_box">
-            <div class="select type_03 line">
-              <select>
-                <option value="1">10 Line</option>
-                <option value="2">50 Line</option>
-                <option value="3">100 Line</option>
-              </select>
-            </div>
-            <button class="btn icon type_03 s" type="button" title="Download">
-              <i class="download"></i>Download
-            </button>
-          </div>
-        </div>
-        <div class="table type_03 y_scroll">
-          <div class="thead">
-            <table>
-              <colgroup>
-                <col style="width:14%;">
-                <col style="width:17%;">
-                <col style="width:17%;">
-                <col>
-                <col style="width:14%;">
-                <col style="width:14%;">
-              </colgroup>
-              <thead>
-                <tr>
-                  <th scope="col" class="sort up">Service ID</th>
-                  <th scope="col" class="sort">Service Name</th>
-                  <th scope="col" class="sort">Architecture</th>
-                  <th scope="col">Description</th>
-                  <th scope="col" class="sort">Status</th>
-                  <th scope="col" class="sort">Date</th>
-                </tr>
-              </thead>
-            </table>
-          </div> -->
-<!--           검색결과 없음
-           <div class="no_data">
-            There is no Data.
-          </div>
-        </div>
-
-      </div> -->
-      <!--//cont_wrap
-    </div>
-  </div> -->
 </body>
-
 </html>
