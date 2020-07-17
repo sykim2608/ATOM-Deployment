@@ -1,6 +1,4 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-
-
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
@@ -37,9 +35,9 @@
                 if(i == cnt) break;
                 total++;
                 var dates = moment(data[i].date).utc().format('MM.DD.YYYY HH:mm:ss');
-                $("#tbodyList").append("<tr name=" + '"' + data[i].serviceId +'"'+"onclick=" + '"' + "trClick(this);" + '"' +"><td>"+data[i].serviceId+"</td><td>"+data[i].serviceName+"</td><td>"+data[i].architecture+"</td><td>"+data[i].description+"</td><td><span class="+'"'+"state color_03"+'"'+">" +data[i].status+"</td><td>"+dates+"</td></tr>");
+                $("#tbodyList").append("<tr><td><input type=" + '"' + "checkbox" + '"'+ "id=" + '"' + "checkData" + '"' + "value="+ '"' + data[i].serviceId + '"' + "></td><td>"+data[i].serviceId+"</td><td>"+data[i].serviceName+"</td><td>"+data[i].architecture+"</td><td>"+data[i].description+"</td><td><span class="+'"'+"state color_03"+'"'+">" +data[i].status+"</td><td>"+dates+"</td></tr>");
               }
-              $("#total_result").append("<span class=" + '"value"' + "><em>" + total + "</em>rows</span>");
+              $("#total_result").append("<span id =" + '"' + "spanData" + '"'+ "class=" + '"value"' + "><em>" + total + "</em>rows</span>");
              },
              error: function() {
               alert("error");
@@ -67,9 +65,9 @@
               if(i == cnt) break;
               total++;
               var dates = moment(data[i].date).utc().format('MM.DD.YYYY HH:mm:ss');
-              $("#tbodyList").append("<tr name=" + '"' + data[i].serviceId +'"'+"onclick=" + '"' + "trClick(this);" + '"' +"><td>"+data[i].serviceId+"</td><td>"+data[i].serviceName+"</td><td>"+data[i].architecture+"</td><td>"+data[i].description+"</td><td><span class="+'"'+"state color_03"+'"'+">" +data[i].status+"</td><td>"+dates+"</td></tr>");
+              $("#tbodyList").append("<<tr><td><input type=" + '"' + "checkbox" + '"'+ "id=" + '"' + "checkData" + '"' + "value="+ '"' + data[i].serviceId + '"' + "></td><td>"+data[i].serviceId+"</td><td>"+data[i].serviceName+"</td><td>"+data[i].architecture+"</td><td>"+data[i].description+"</td><td><span class="+'"'+"state color_03"+'"'+">" +data[i].status+"</td><td>"+dates+"</td></tr>");
             }
-            $("#total_result").append("<span class=" + '"value"' + "><em>" + total + "</em>rows</span>");
+            $("#total_result").append("<span id =" + '"' + "spanData" + '"'+ "class=" + '"value"' + "><em>" + total + "</em>rows</span>");
            },
            error: function() {
             alert("error");
@@ -78,29 +76,27 @@
       });
     });
   </script>
-  <!-- Table TR 버튼 클릭 시 (삭제 기능) -->
-  <script>
-    function trClick(obj) {
-       var tr = $(obj);
-       var result = confirm(obj.getAttribute("name")+"를 삭제하시겠습니까?");
-       var dataFormat = {deploymentId : obj.getAttribute("name")};
+  <!-- Delete 버튼 클릭 시 -->
+  <script type="text/javascript">
+    function deleteClick() {
+      var obj = $('input[id=checkData]:checked');
+      var tr = obj.parent().parent();
+      var dataFormat = {deploymentId : obj.val()};
+      var result = confirm(obj.val() + "를 삭제하시겠습니까?");
       if(result) {
-        tr.remove();
-        //db 삭제 
+        tr.remove(); 
+        var total = $("#spanData").text().replace("rows","") - 1;
+        $("#spanData").remove();
+        $("#total_result").append("<span id =" + '"' + "spanData" + '"'+ "class=" + '"value"' + "><em>" + total + "</em>rows</span>");
         $.ajax({
           type: "POST",
           contentType: "application/json",
           data: JSON.stringify(dataFormat),
           url: "/deleteList",
-          success: function() {
-            alert("delete success");
-          },
           error: function() {
             alert("delete fail");
           }
-        });
-      }
-      else {
+        });    
       }
     }
   </script>
@@ -168,8 +164,8 @@
           <div class="cell nth_02 option_box">
             <div class="select type_03 line">
               <select id="selectLine" name="myselect">
-                <option value="5">5 Line</option>
                 <option value="10">10 Line</option>
+                <option value="50">50 Line</option>
                 <option value="100">100 Line</option>
               </select>
             </div>
@@ -192,6 +188,7 @@
               </colgroup>
               <thead>
                 <tr>
+                  <th scope="col" class="sort down">Data Select</th>
                   <th scope="col" class="sort down">Service ID</th>
                   <th scope="col" class="sort">Service Name</th>
                   <th scope="col" class="sort">Architecture</th>
@@ -239,7 +236,9 @@
             </ul>
           </div>
           <div class="btn_area">
-            <button type="button" class="btn type_01 primary">Create</button>
+            <button type="button" class="btn type_01 primary" >Create</button>
+            <button type="button" class="btn type_01 primary" onClick="deleteClick()">Delete</button>
+            <button type="button" class="btn type_01 primary">Modify</button>
           </div>
         </div>
 </body>
