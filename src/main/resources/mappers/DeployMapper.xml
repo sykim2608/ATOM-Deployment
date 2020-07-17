@@ -13,5 +13,10 @@
             , DATE
         FROM DEPLOYMENT
     </select>
+    <delete id="deleteList" parameterType="String">
+        DELETE FROM DEPLOYMENT
+        WHERE
+            SERVICEID = #{id}
+    </delete>
 
 </mapper>

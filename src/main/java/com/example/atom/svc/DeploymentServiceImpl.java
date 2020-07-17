@@ -23,4 +23,9 @@ public class DeploymentServiceImpl implements DeploymentService {
         return mapper.getList();
     }
 
+    @Override
+    public void deleteList(String deploymentId) throws Exception {
+        mapper.deleteList(deploymentId);
+    }
+
 }

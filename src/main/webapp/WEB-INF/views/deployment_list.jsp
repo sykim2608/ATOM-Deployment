@@ -1,3 +1,6 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
+
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
@@ -22,7 +25,7 @@
           $(".load_wrap").remove();
           $.ajax({   
              type:"GET",
-             url: "/testAjax",
+             url: "/getList",
              dataType: "json",
              success: function(data) {
               if(data == null) {
@@ -52,7 +55,7 @@
         $(".value").remove();
         $.ajax({
           type:"GET",
-          url: "/testAjax",
+          url: "/getList",
           dataType: "json",
           success: function(data) {
             if(data == null) {
@@ -79,23 +82,23 @@
   <script>
     function trClick(obj) {
        var tr = $(obj);
-       alert(obj.getAttribute("name"));
-       var result = confirm("삭제하시겠습니까?");
+       var result = confirm(obj.getAttribute("name")+"를 삭제하시겠습니까?");
+       var dataFormat = {deploymentId : obj.getAttribute("name")};
       if(result) {
         tr.remove();
         //db 삭제 
-        // $.ajax({
-        //   type"DELETE",
-        //   dataType="json",
-        //   data: {"serviceId":tr.serviceId},
-        //   url: "",
-        //   success: function() {
-        //     alert("delete success");
-        //   },
-        //   error: function() {
-        //     alert("delete fail");
-        //   }
-        // });
+        $.ajax({
+          type: "POST",
+          contentType: "application/json",
+          data: JSON.stringify(dataFormat),
+          url: "/deleteList",
+          success: function() {
+            alert("delete success");
+          },
+          error: function() {
+            alert("delete fail");
+          }
+        });
       }
       else {
       }
@@ -161,7 +164,6 @@
         <div class="board_top">
           <div class="cell nth_01 total_result" id="total_result">
             Total List
-            <!-- <span class="value"><em>123,124,124</em>rows</span> -->
           </div>
           <div class="cell nth_02 option_box">
             <div class="select type_03 line">
@@ -203,7 +205,6 @@
           <div class="tbody" id="tbodyClass">     
           <!-- ***table *** -->        
             <table id="tableId">
-              <!-- <tr name="hi" onclick="trClick(this);"><td>test</td></tr> -->
               <colgroup>
                 <col style="width:14%;">
                 <col style="width:17%;">
