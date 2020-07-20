@@ -28,4 +28,10 @@ public class DeploymentServiceImpl implements DeploymentService {
         mapper.deleteList(deploymentId);
     }
 
+    @Override
+    public void addList(DeploymentGroup deploymentGroup) throws Exception {
+        mapper.addList(deploymentGroup);
+    }
+
+
 }

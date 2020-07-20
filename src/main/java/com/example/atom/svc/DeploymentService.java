@@ -16,8 +16,15 @@ public interface DeploymentService {
 
     /**
      * Deployment Group 정보 삭제
-     * @param deploymentId 삭제 할 Deployment Group 아이디
+     * @param deploymentId 삭제할 Deployment Group 아이디
      * @throws Exception
      */
     void deleteList(String deploymentId) throws Exception;
+
+    /**
+     * Deployment Group 정보 등록
+     * @param deploymentGroup 등록할 Deployment Group 정보
+     * @throws Exception
+     */
+    void addList(DeploymentGroup deploymentGroup) throws Exception;
 }

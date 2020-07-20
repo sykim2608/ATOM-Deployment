@@ -44,4 +44,14 @@ public class DeploymentController {
         deploymentService.deleteList(deleteModel.getDeploymentId());
     }
 
+    /**
+     * Ajax 요청에 따른 Deployment Group 등록
+     * @param deploymentGroup 등록할 Deployment Group 정보
+     * @throws Exception
+     */
+    @RequestMapping(value="/addList", method = RequestMethod.POST)
+    public @ResponseBody void addList(@RequestBody DeploymentGroup deploymentGroup) throws Exception {
+        deploymentService.addList(deploymentGroup);
+    }
+
 }

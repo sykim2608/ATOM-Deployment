@@ -17,33 +17,64 @@
   <script src="../../scripts/atom/ui_common.js"></script>
   <link rel="shortcut icon" type="image/x-icon" href="../../images/atom/favicon.ico">
   <link rel="stylesheet" href="../../styles/atom/style.css">
+  <!-- bootstrap 4.5-->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+
   <!-- 첫 페이지 로딩 시 -->
   <script>
-        $(document).ready(function(){
-          $(".load_wrap").remove();
-          $.ajax({   
-             type:"GET",
-             url: "/getList",
-             dataType: "json",
-             success: function(data) {
-              if(data == null) {
-                $("#tbodyList").append("<div class=" +  '"no_data"' + ">There is no Data.</div>");
-              }                              
-              var cnt = $("#selectLine option:checked").val();
-              var total = 0;
-              for(var i=0 in data) {
-                if(i == cnt) break;
-                total++;
-                var dates = moment(data[i].date).utc().format('MM.DD.YYYY HH:mm:ss');
-                $("#tbodyList").append("<tr><td><input type=" + '"' + "checkbox" + '"'+ "id=" + '"' + "checkData" + '"' + "value="+ '"' + data[i].serviceId + '"' + "></td><td>"+data[i].serviceId+"</td><td>"+data[i].serviceName+"</td><td>"+data[i].architecture+"</td><td>"+data[i].description+"</td><td><span class="+'"'+"state color_03"+'"'+">" +data[i].status+"</td><td>"+dates+"</td></tr>");
-              }
-              $("#total_result").append("<span id =" + '"' + "spanData" + '"'+ "class=" + '"value"' + "><em>" + total + "</em>rows</span>");
-             },
-             error: function() {
-              alert("error");
-             }
-          });
+    $(document).ready(function(){
+      $(".load_wrap").remove();
+      $.ajax({   
+         type:"GET",
+         url: "/getList",
+         dataType: "json",
+         success: function(data) {
+          if(data == null) {
+            $("#tbodyList").append("<div class=" +  '"no_data"' + ">There is no Data.</div>");
+          }                              
+          var cnt = $("#selectLine option:checked").val();
+          var total = 0;
+          for(var i=0 in data) {
+            if(i == cnt) break;
+            total++;
+            var dates = moment(data[i].date).utc().format('MM.DD.YYYY HH:mm:ss');
+            $("#tbodyList").append("<tr><td><input type=" + '"' + "checkbox" + '"'+ "id=" + '"' + "checkData" + '"' + "value="+ '"' + data[i].serviceId + '"' + "></td><td>"+data[i].serviceId+"</td><td>"+data[i].serviceName+"</td><td>"+data[i].architecture+"</td><td>"+data[i].description+"</td><td><span class="+'"'+"state color_03"+'"'+">" +data[i].status+"</td><td>"+dates+"</td></tr>");
+          }
+          $("#total_result").append("<span id =" + '"' + "spanData" + '"'+ "class=" + '"value"' + "><em>" + total + "</em>rows</span>");
+         },
+         error: function() {
+          alert("error");
+         }
+      });
+
+      // Modal 창에서 Save 클릭 시 
+      $("#saveBtn").click(function() {
+        var id = document.getElementById("svcId").value;
+        var name = document.getElementById("svcName").value;
+        var desc = document.getElementById("svcDesc").value;
+        var archi = document.getElementById("svcArch").value;
+        var dates = moment(new Date()).utc(+8);        
+        var dataFormat = {serviceId : id, serviceName : name, architecture : archi, description : desc, status : "Success", date : dates};
+        $.ajax({
+          type: "POST",
+          contentType: "application/json",
+          data: JSON.stringify(dataFormat),
+          url: "/addList",
+          error: function() {
+            alert("error");
+          }
         });
+      });
+
+        //Modal Save 후 초기화 
+       $(".modal").on("hidden.bs.modal", function() {
+        $("#svcId").val("");
+        $("#svcName").val("");
+        $("#svcDesc").val("");
+        $("#svcArch").val("");
+      });
+    });
   </script>
   <!-- Line select option 변경 시 -->
   <script>
@@ -98,6 +129,12 @@
           }
         });    
       }
+    }
+  </script>
+  <!-- Modal Script-->
+  <script>
+    function createClick() {
+      $('#createModal').modal();
     }
   </script>
 
@@ -236,10 +273,94 @@
             </ul>
           </div>
           <div class="btn_area">
-            <button type="button" class="btn type_01 primary" >Create</button>
+            <button type="button" class="btn type_01 primary" data-toggle="modal" data-target="#myModal" id="myBtn" onClick="createClick()">Create</button>
             <button type="button" class="btn type_01 primary" onClick="deleteClick()">Delete</button>
             <button type="button" class="btn type_01 primary">Modify</button>
           </div>
         </div>
+          <!-- Create deployment Modal --> 
+        	<div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h2 class="modal-title" id="myModalLabel">Create Deployment</h2>
+                </div>
+                <div class="modal-body">
+                  <div class="modal-body1">
+                    <div class="table type_03 detail">
+                      <table>
+                        <tbody>
+                          <tr>
+                            <th>
+                              <span class="imp">Service ID</span>
+                            </th>
+                            <td>
+                              <table class="td_value">
+                                <tr>
+                                  <td>
+                                    <span class="label">Service ID</span>
+                                    <div class="input type_01 m">
+                                      <input type="text" value="" id="svcId" maxlength="10" placeholder="Service ID">
+                                    </div>
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                            </tr>
+                          <tr>
+                            <th>
+                              <span class="imp">Service</span>
+                            </th>                            
+                            <td>
+                              <table class="td_value">
+                                <tr>
+                                  <td>
+                                    <span class="label">Service Name</span>
+                                    <div class="input type_01 m" >
+                                      <input type="text" value="" id="svcName" maxlength="15" placeholder="Service Name">
+                                    </div>
+                                  </td>
+                                </tr>
+                              </table>
+                              <div class="value_wrap">
+                                <span class="label">Description</span>
+                                <div class="textarea type_01 xxl">
+                                  <textarea name="" id="svcDesc" rows="2" maxlength="100" placeholder="Description"></textarea>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <th>
+                              <span class="imp">Architecture</span>
+                            </th>
+                            <td>
+                              <table class="td_value">
+                                <tr>
+                                  <td>
+                                    <span class="label">Architecture</span>
+                                    <div class="input type_01 m">
+                                      <input type="text" value="" id="svcArch" maxlength="15" placeholder="Architecture">
+                                    </div>
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="saveBtn" data-dismiss="modal">Save</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

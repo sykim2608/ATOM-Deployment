@@ -25,4 +25,11 @@ public interface DeployMapper {
      * @throws Exception
      */
     void deleteList(String id) throws Exception;
+
+    /**
+     * DeploymentGroup 정보 등록
+     * @param deploymentGroup 등록할 Deployment Group 정보
+     * @throws Exception
+     */
+    void addList(DeploymentGroup deploymentGroup) throws Exception;
 }
