@@ -48,7 +48,7 @@
          }
       });
 
-      // Modal 창에서 Save 클릭 시 
+      // Modal Create 창에서 Save 버튼 클릭 시
       $("#saveBtn").click(function() {
         var id = document.getElementById("svcId").value;
         var name = document.getElementById("svcName").value;
@@ -66,16 +66,35 @@
           }
         });
       });
-
-        //Modal Save 후 초기화 
+       //Save 후 Create 창 초기화
        $(".modal").on("hidden.bs.modal", function() {
         $("#svcId").val("");
         $("#svcName").val("");
         $("#svcDesc").val("");
         $("#svcArch").val("");
       });
+
+       //Modal Modify 창에서 SaveChanges 버튼 클릭 시
+       $("#saveChangeBtn").click(function() {
+        var id = document.getElementById("modifyId").value;
+        var name = document.getElementById("modifyName").value;
+        var desc = document.getElementById("modifyDesc").value;
+        var archi = document.getElementById("modifyArch").value;
+        var dataFormat = {serviceId : id, serviceName : name, architecture : archi, description : desc};
+        $.ajax({
+          type: "POST",
+          contentType: "application/json",
+          data: JSON.stringify(dataFormat),
+          url: "/modifyList",
+          error: function() {
+            alert("error");
+          }
+        });
+       });
+
     });
   </script>
+
   <!-- Line select option 변경 시 -->
   <script>
     $(function() {
@@ -107,6 +126,7 @@
       });
     });
   </script>
+
   <!-- Delete 버튼 클릭 시 -->
   <script type="text/javascript">
     function deleteClick() {
@@ -131,13 +151,29 @@
       }
     }
   </script>
-  <!-- Modal Script-->
+
+  <!-- Modal 창 띄우기 -->
   <script>
+    //Create 버튼 클릭 시
     function createClick() {
       $('#createModal').modal();
     }
-  </script>
 
+    //Modify 버튼 클릭 시 
+    function modifyClick() {
+      var modifyValue = $('input[id=checkData]:checked');
+      var tr = modifyValue.parent().parent();
+      var td = tr.children();
+      var serviceName = td.eq(2).text();
+      var architecture = td.eq(3).text();
+      var serviceDesc = td.eq(4).text();
+       $("#modifyId").val(modifyValue.val());
+       $("#modifyName").val(serviceName);
+       $("#modifyDesc").val(serviceDesc);
+       $("#modifyArch").val(architecture);
+      $('#modifyModal').modal();
+    }
+  </script>
 </head>
 <body>
   <div class="header"></div>
@@ -253,32 +289,32 @@
           </div>
         </div>
         <!-- Loading -->
-                <div class="table type_03 y_scroll" id="loading">
-                  <div class="load_wrap">
-                    <div class="loading"><span></span></div>
-                  </div>
-                </div>
+        <div class="table type_03 y_scroll" id="loading">
+          <div class="load_wrap">
+            <div class="loading"><span></span></div>
+          </div>
+        </div>
         <div class="cont_footer type_01">
           <div class="paging">
             <ul>
-              <li><a href="#none" class="btn first"><span class="hidden">First</span></a></li>
-              <li><a href="#none" class="btn before"><span class="hidden">Before</span></a></li>
-              <li><a href="#none">1</a></li>
-              <li><a href="#none">2</a></li>
-              <li><a href="#none">3</a></li>
-              <li><a href="#none" class="on">4</a></li>
-              <li><a href="#none">5</a></li>
-              <li><a href="#none" class="btn next"><span class="hidden">Next</span></a></li>
-              <li><a href="#none" class="btn last"><span class="hidden">Last</span></a></li>
+            <li><a href="#none" class="btn first"><span class="hidden">First</span></a></li>
+            <li><a href="#none" class="btn before"><span class="hidden">Before</span></a></li>
+            <li><a href="#none">1</a></li>
+            <li><a href="#none">2</a></li>
+            <li><a href="#none">3</a></li>
+            <li><a href="#none" class="on">4</a></li>
+            <li><a href="#none">5</a></li>
+            <li><a href="#none" class="btn next"><span class="hidden">Next</span></a></li>
+            <li><a href="#none" class="btn last"><span class="hidden">Last</span></a></li>
             </ul>
           </div>
           <div class="btn_area">
             <button type="button" class="btn type_01 primary" data-toggle="modal" data-target="#myModal" id="myBtn" onClick="createClick()">Create</button>
             <button type="button" class="btn type_01 primary" onClick="deleteClick()">Delete</button>
-            <button type="button" class="btn type_01 primary">Modify</button>
+            <button type="button" class="btn type_01 primary" data-toggle="modal" onClick="modifyClick()">Modify</button>
           </div>
         </div>
-          <!-- Create deployment Modal --> 
+          <!-- Create Deployment (Modal View) --> 
         	<div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog">
               <div class="modal-content">
@@ -359,6 +395,88 @@
             </div>
           </div>
         </div>
+        <!-- Modify Deployment (Modal View) -->
+        <div class="modal fade" id="modifyModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h2 class="modal-title" id="myModalLabel">Modify Deployment</h2>
+                </div>
+                <div class="modal-body">
+                  <div class="modal-body1">
+                    <div class="table type_03 detail">
+                      <table>
+                        <tbody>
+                          <tr>
+                            <th>
+                              <span class="imp">Service ID</span>
+                            </th>
+                            <td>
+                              <table class="td_value">
+                                <tr>
+                                  <td>
+                                    <span class="label">Service ID</span>
+                                    <div class="input type_01 m">
+                                      <input type="text" value="" id="modifyId" disabled="disabled">
+                                    </div>
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                          <tr>
+                            <th>
+                              <span class="imp">Service</span>
+                            </th>                            
+                            <td>
+                              <table class="td_value">
+                                <tr>
+                                  <td>
+                                    <span class="label">Service Name</span>
+                                    <div class="input type_01 m" >
+                                      <input type="text" value="" id="modifyName" maxlength="15" placeholder="Service Name">
+                                    </div>
+                                  </td>
+                                </tr>
+                              </table>
+                              <div class="value_wrap">
+                                <span class="label">Description</span>
+                                <div class="textarea type_01 xxl">
+                                  <textarea name="" id="modifyDesc" rows="2" maxlength="100" placeholder="Description"></textarea>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <th>
+                              <span class="imp">Architecture</span>
+                            </th>
+                            <td>
+                              <table class="td_value">
+                                <tr>
+                                  <td>
+                                    <span class="label">Architecture</span>
+                                    <div class="input type_01 m">
+                                      <input type="text" value="" id="modifyArch" maxlength="15" placeholder="Architecture">
+                                    </div>
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="saveChangeBtn" data-dismiss="modal">Save Changes</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>              
+            </div>
+          </div>
+        </div>
+        <!-- end of modal -->
       </div>
     </div>
   </div>

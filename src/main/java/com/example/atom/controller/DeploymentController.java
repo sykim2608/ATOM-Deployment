@@ -2,6 +2,7 @@ package com.example.atom.controller;
 
 import com.example.atom.model.DeleteModel;
 import com.example.atom.model.DeploymentGroup;
+import com.example.atom.model.ModifyModel;
 import com.example.atom.svc.DeploymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -52,6 +53,16 @@ public class DeploymentController {
     @RequestMapping(value="/addList", method = RequestMethod.POST)
     public @ResponseBody void addList(@RequestBody DeploymentGroup deploymentGroup) throws Exception {
         deploymentService.addList(deploymentGroup);
+    }
+
+    /**
+     * Ajax 요청에 따른 Deployment Group 변경
+     * @param modifyModel 변경할 Deployment Group 정보
+     * @throws Exception
+     */
+    @RequestMapping(value="/modifyList", method = RequestMethod.POST)
+    public @ResponseBody void modifyList(@RequestBody ModifyModel modifyModel) throws Exception {
+        deploymentService.modifyList(modifyModel);
     }
 
 }

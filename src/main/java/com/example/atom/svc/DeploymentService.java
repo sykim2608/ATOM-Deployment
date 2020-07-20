@@ -1,6 +1,8 @@
 package com.example.atom.svc;
 
 import com.example.atom.model.DeploymentGroup;
+import com.example.atom.model.ModifyModel;
+
 import java.util.List;
 
 /**
@@ -27,4 +29,11 @@ public interface DeploymentService {
      * @throws Exception
      */
     void addList(DeploymentGroup deploymentGroup) throws Exception;
+
+    /**
+     * Deployment Group 정보 변경
+     * @param modifyModel 변경할 Deployment Group 정보
+     * @throws Exception
+     */
+    void modifyList(ModifyModel modifyModel) throws Exception;
 }

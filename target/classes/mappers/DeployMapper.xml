@@ -18,5 +18,31 @@
         WHERE
             SERVICEID = #{id}
     </delete>
+    <insert id="addList" parameterType="com.example.atom.model.DeploymentGroup">
+        INSERT INTO DEPLOYMENT
+        (
+            SERVICEID
+            , SERVICENAME
+            , ARCHITECTURE
+            , DESCRIPTION
+            , STATUS
+            , DATE
+        ) VALUES (
+            #{serviceId},
+            #{serviceName},
+            #{architecture},
+            #{description},
+            #{status},
+            #{date}
+        )
+    </insert>
+    <update id="modifyList" parameterType="com.example.atom.model.ModifyModel">
+        UPDATE DEPLOYMENT SET
+            SERVICENAME = #{serviceName}
+            , ARCHITECTURE = #{architecture}
+            , DESCRIPTION = #{description}
+        WHERE
+            SERVICEID = #{serviceId}
+    </update>
 
 </mapper>

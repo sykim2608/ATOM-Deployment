@@ -36,5 +36,13 @@
             #{date}
         )
     </insert>
+    <update id="modifyList" parameterType="com.example.atom.model.ModifyModel">
+        UPDATE DEPLOYMENT SET
+            SERVICENAME = #{serviceName}
+            , ARCHITECTURE = #{architecture}
+            , DESCRIPTION = #{description}
+        WHERE
+            SERVICEID = #{serviceId}
+    </update>
 
 </mapper>
