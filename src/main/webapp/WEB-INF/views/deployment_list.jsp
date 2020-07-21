@@ -309,7 +309,7 @@
             </ul>
           </div>
           <div class="btn_area">
-            <button type="button" class="btn type_01 primary" data-toggle="modal" data-target="#myModal" id="myBtn" onClick="createClick()">Create</button>
+            <button type="button" class="btn type_01 primary" data-toggle="modal" onClick="createClick()">Create</button>
             <button type="button" class="btn type_01 primary" onClick="deleteClick()">Delete</button>
             <button type="button" class="btn type_01 primary" data-toggle="modal" onClick="modifyClick()">Modify</button>
           </div>
