@@ -54,8 +54,11 @@
         var name = document.getElementById("svcName").value;
         var desc = document.getElementById("svcDesc").value;
         var archi = document.getElementById("svcArch").value;
-        var dates = moment(new Date()).utc(+8);        
+        var dates = moment(new Date()).utc(+8);           
         var dataFormat = {serviceId : id, serviceName : name, architecture : archi, description : desc, status : "Success", date : dates};
+
+        $("#tbodyList").append("<tr><td><input type=" + '"' + "checkbox" + '"'+ "id=" + '"' + "checkData" + '"' + "value="+ '"' + id + '"' + "></td><td>"+id+"</td><td>"+name+"</td><td>"+archi+"</td><td>"+desc+"</td><td><span class="+'"'+"state color_03"+'"'+">" +"Success"+"</td><td>"+moment(dates).utc().format('MM.DD.YYYY HH:mm:ss')+"</td></tr>");     
+
         $.ajax({
           type: "POST",
           contentType: "application/json",
@@ -81,6 +84,14 @@
         var desc = document.getElementById("modifyDesc").value;
         var archi = document.getElementById("modifyArch").value;
         var dataFormat = {serviceId : id, serviceName : name, architecture : archi, description : desc};
+        
+        //화면 업데이트 
+        var modifyValue = $('input[id=checkData]:checked');
+        var tr = modifyValue.parent().parent();
+        var dates = tr.children().eq(6).text();        
+        tr.empty();
+        tr.append("<td><input type=" + '"' + "checkbox" + '"' + "id=" + '"' + "checkData" + '"' + "value="+ '"' + id + '"' + "></td><td>"+id+"</td><td>"+name+"</td><td>"+archi+"</td><td>"+desc+"</td><td><span class="+'"'+"state color_03"+'"'+">" +"Success"+"</td><td>"+dates+"</td>");
+
         $.ajax({
           type: "POST",
           contentType: "application/json",
@@ -274,7 +285,7 @@
           </div>
           <div class="tbody" id="tbodyClass">     
           <!-- ***table *** -->        
-            <table id="tableId">
+            <table id="myTable">
               <colgroup>
                 <col style="width:14%;">
                 <col style="width:17%;">
