@@ -3,6 +3,7 @@ package com.example.atom.controller;
 import com.example.atom.model.DeleteModel;
 import com.example.atom.model.DeploymentGroup;
 import com.example.atom.model.ModifyModel;
+import com.example.atom.model.SearchModel;
 import com.example.atom.svc.DeploymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -63,6 +64,17 @@ public class DeploymentController {
     @RequestMapping(value="/modifyList", method = RequestMethod.POST)
     public @ResponseBody void modifyList(@RequestBody ModifyModel modifyModel) throws Exception {
         deploymentService.modifyList(modifyModel);
+    }
+
+    /**
+     * Ajax 요청에 따른 Deployment Group 검색
+     * @param searchModel 검색할 Deployment Group 정보
+     * @return 검색된 DeploymentGroup 정보
+     * @throws Exception
+     */
+    @RequestMapping(value="/findList", method = RequestMethod.POST)
+    public @ResponseBody List<DeploymentGroup> findList(@RequestBody SearchModel searchModel) throws Exception {
+        return deploymentService.findList(searchModel);
     }
 
 }

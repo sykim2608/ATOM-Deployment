@@ -11,38 +11,50 @@
             , DESCRIPTION
             , STATUS
             , DATE
-        FROM DEPLOYMENT
+        FROM  DEPLOYMENT
     </select>
     <delete id="deleteList" parameterType="String">
-        DELETE FROM DEPLOYMENT
-        WHERE
-            SERVICEID = #{id}
+        DELETE
+          FROM  DEPLOYMENT
+         WHERE  SERVICEID = #{id}
     </delete>
     <insert id="addList" parameterType="com.example.atom.model.DeploymentGroup">
-        INSERT INTO DEPLOYMENT
-        (
-            SERVICEID
-            , SERVICENAME
-            , ARCHITECTURE
-            , DESCRIPTION
-            , STATUS
-            , DATE
-        ) VALUES (
-            #{serviceId},
-            #{serviceName},
-            #{architecture},
-            #{description},
-            #{status},
-            #{date}
-        )
+        INSERT
+          INTO DEPLOYMENT (
+               SERVICEID
+               , SERVICENAME
+               , ARCHITECTURE
+               , DESCRIPTION
+               , STATUS
+               , DATE )
+        VALUES (
+               #{serviceId}
+               , #{serviceName}
+               , #{architecture}
+               , #{description}
+               , #{status}
+               , #{date} )
     </insert>
     <update id="modifyList" parameterType="com.example.atom.model.ModifyModel">
-        UPDATE DEPLOYMENT SET
-            SERVICENAME = #{serviceName}
-            , ARCHITECTURE = #{architecture}
-            , DESCRIPTION = #{description}
-        WHERE
-            SERVICEID = #{serviceId}
+         UPDATE  DEPLOYMENT
+            SET  SERVICENAME    = #{serviceName}
+                 , ARCHITECTURE = #{architecture}
+                 , DESCRIPTION  = #{description}
+          WHERE  SERVICEID      = #{serviceId}
     </update>
+    <select id="findList" parameterType="com.example.atom.model.SearchModel" resultType="com.example.atom.model.DeploymentGroup">
+        SELECT
+                SERVICEID
+                , SERVICENAME
+                , ARCHITECTURE
+                , DESCRIPTION
+                , STATUS
+                , DATE
+          FROM  DEPLOYMENT
+         WHERE  SERVICEID    = #{serviceId}
+           AND  SERVICENAME  = #{serviceName}
+           AND  ARCHITECTURE = #{architecture}
+           AND  STATUS       = #{status}
+    </select>
 
 </mapper>

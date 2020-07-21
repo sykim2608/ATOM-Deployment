@@ -30,8 +30,8 @@
          url: "/getList",
          dataType: "json",
          success: function(data) {
-          if(data == null) {
-            $("#tbodyList").append("<div class=" +  '"no_data"' + ">There is no Data.</div>");
+          if(data.length < 1) {
+            $("#tbodyList").append("<div class=no_data id=" + '"tbodyEmpty"'+"> There is no Data.</div>");
           }                              
           var cnt = $("#selectLine option:checked").val();
           var total = 0;
@@ -56,8 +56,11 @@
         var archi = document.getElementById("svcArch").value;
         var dates = moment(new Date()).utc(+8);           
         var dataFormat = {serviceId : id, serviceName : name, architecture : archi, description : desc, status : "Success", date : dates};
-
-        $("#tbodyList").append("<tr><td><input type=" + '"' + "checkbox" + '"'+ "id=" + '"' + "checkData" + '"' + "value="+ '"' + id + '"' + "></td><td>"+id+"</td><td>"+name+"</td><td>"+archi+"</td><td>"+desc+"</td><td><span class="+'"'+"state color_03"+'"'+">" +"Success"+"</td><td>"+moment(dates).utc().format('MM.DD.YYYY HH:mm:ss')+"</td></tr>");     
+        $("#tbodyEmpty").remove();
+        $("#tbodyList").append("<tr><td><input type=" + '"' + "checkbox" + '"'+ "id=" + '"' + "checkData" + '"' + "value="+ '"' + id + '"' + "></td><td>"+id+"</td><td>"+name+"</td><td>"+archi+"</td><td>"+desc+"</td><td><span class="+'"'+"state color_03"+'"'+">" +"Success"+"</td><td>"+moment(dates).utc().format('MM.DD.YYYY HH:mm:ss')+"</td></tr>");
+        var total = $("#spanData").text().replace("rows","")*1 + 1;
+        $("#spanData").remove();
+        $("#total_result").append("<span id =" + '"' + "spanData" + '"'+ "class=" + '"value"' + "><em>" + total + "</em>rows</span>");     
 
         $.ajax({
           type: "POST",
@@ -84,7 +87,7 @@
         var desc = document.getElementById("modifyDesc").value;
         var archi = document.getElementById("modifyArch").value;
         var dataFormat = {serviceId : id, serviceName : name, architecture : archi, description : desc};
-        
+
         //화면 업데이트 
         var modifyValue = $('input[id=checkData]:checked');
         var tr = modifyValue.parent().parent();
@@ -117,8 +120,8 @@
           url: "/getList",
           dataType: "json",
           success: function(data) {
-            if(data == null) {
-              $("#tbodyList").append("<div class=" +  '"no_data"' + ">There is no Data.</div>");
+            if(data.length < 1) {
+              $("#tbodyList").append("<div class=no_data id=" + '"tbodyEmpty"'+"> There is no Data.</div>");
             } 
             var cnt = $("#selectLine option:checked").val();
             var total = 0;
@@ -126,7 +129,7 @@
               if(i == cnt) break;
               total++;
               var dates = moment(data[i].date).utc().format('MM.DD.YYYY HH:mm:ss');
-              $("#tbodyList").append("<<tr><td><input type=" + '"' + "checkbox" + '"'+ "id=" + '"' + "checkData" + '"' + "value="+ '"' + data[i].serviceId + '"' + "></td><td>"+data[i].serviceId+"</td><td>"+data[i].serviceName+"</td><td>"+data[i].architecture+"</td><td>"+data[i].description+"</td><td><span class="+'"'+"state color_03"+'"'+">" +data[i].status+"</td><td>"+dates+"</td></tr>");
+              $("#tbodyList").append("<tr><td><input type=" + '"' + "checkbox" + '"'+ "id=" + '"' + "checkData" + '"' + "value="+ '"' + data[i].serviceId + '"' + "></td><td>"+data[i].serviceId+"</td><td>"+data[i].serviceName+"</td><td>"+data[i].architecture+"</td><td>"+data[i].description+"</td><td><span class="+'"'+"state color_03"+'"'+">" +data[i].status+"</td><td>"+dates+"</td></tr>");
             }
             $("#total_result").append("<span id =" + '"' + "spanData" + '"'+ "class=" + '"value"' + "><em>" + total + "</em>rows</span>");
            },
@@ -166,7 +169,7 @@
   <!-- Modal 창 띄우기 -->
   <script>
     //Create 버튼 클릭 시
-    function createClick() {
+    function createClick() {      
       $('#createModal').modal();
     }
 
@@ -185,6 +188,42 @@
       $('#modifyModal').modal();
     }
   </script>
+
+  <!-- Search 버튼 클릭 시 -->
+  <script type="text/javascript">
+    function searchClick() {
+      var svcId = document.getElementById("searchId").value;
+      var svcName = document.getElementById("searchName").value;
+      var Arc = document.getElementById("searchArc").value;
+      var dataFormat = {serviceId : svcId, serviceName : svcName, architecture : Arc, status : "Success"};
+
+      $.ajax({
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(dataFormat),
+        url: "/findList",
+        success: function(data) {
+          $("#tbodyList").empty();
+          $(".value").remove();
+          if(data.length < 1) {
+              $("#tbodyList").append("<div class=no_data id=" + '"tbodyEmpty"'+"> There is no Data.</div>");
+          } 
+          var total = 0;
+          for(var i=0 in data) {
+            total++;
+            var dates = moment(data[i].date).utc().format('MM.DD.YYYY HH:mm:ss');
+            $("#tbodyList").append("<<tr><td><input type=" + '"' + "checkbox" + '"'+ "id=" + '"' + "checkData" + '"' + "value="+ '"' + data[i].serviceId + '"' + "></td><td>"+data[i].serviceId+"</td><td>"+data[i].serviceName+"</td><td>"+data[i].architecture+"</td><td>"+data[i].description+"</td><td><span class="+'"'+"state color_03"+'"'+">" +data[i].status+"</td><td>"+dates+"</td></tr>");
+          }
+          $("#total_result").append("<span id =" + '"' + "spanData" + '"'+ "class=" + '"value"' + "><em>" + total + "</em>rows</span>");
+        },
+        error: function() {
+          alert("error");
+        }
+      });
+
+    }
+  </script>
+
 </head>
 <body>
   <div class="header"></div>
@@ -204,19 +243,19 @@
                   <th>Service ID</th>
                   <td>
                     <div class="input type_01 m">
-                      <input type="text" value="" placeholder="Keywords">
+                      <input type="text" value="" placeholder="Keywords" id = "searchId">
                     </div>
                   </td>
                   <th>Service Name</th>
                   <td>
                     <div class="input type_01 m">
-                      <input type="text" value="" placeholder="Keywords">
+                      <input type="text" value="" placeholder="Keywords" id = "searchName">
                     </div>
                   </td>
                   <th>Architecture</th>
                   <td>
                     <div class="input type_01 m">
-                      <input type="text" value="" placeholder="Keywords">
+                      <input type="text" value="" placeholder="Keywords" id = "searchArc">
                     </div>
                   </td>
                 </tr>
@@ -238,7 +277,7 @@
             </table>
           </div>
           <div class="btn_box">
-            <button id="searchBtn"type="button" class="btn search"> Search </button>
+            <button id="searchBtn"type="button" class="btn search" onclick="searchClick()"> Search </button>
           </div>
         </div>
         <div class="board_top">
@@ -295,6 +334,7 @@
                 <col style="width:14%;">
               </colgroup>
               <tbody id="tbodyList">
+                <!-- <div class= no_data id="tbodyEmpty">There is no Data.</div> -->
                 </tbody>
             </table>
           </div>

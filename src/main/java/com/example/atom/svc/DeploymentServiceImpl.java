@@ -3,6 +3,7 @@ package com.example.atom.svc;
 import com.example.atom.dao.DeployMapper;
 import com.example.atom.model.DeploymentGroup;
 import com.example.atom.model.ModifyModel;
+import com.example.atom.model.SearchModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -37,6 +38,11 @@ public class DeploymentServiceImpl implements DeploymentService {
     @Override
     public void modifyList(ModifyModel modifyModel) throws Exception {
         mapper.modifyList(modifyModel);
+    }
+
+    @Override
+    public List<DeploymentGroup> findList(SearchModel searchModel) throws Exception {
+        return mapper.findList(searchModel);
     }
 
 

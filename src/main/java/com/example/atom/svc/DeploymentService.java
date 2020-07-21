@@ -2,6 +2,7 @@ package com.example.atom.svc;
 
 import com.example.atom.model.DeploymentGroup;
 import com.example.atom.model.ModifyModel;
+import com.example.atom.model.SearchModel;
 
 import java.util.List;
 
@@ -36,4 +37,12 @@ public interface DeploymentService {
      * @throws Exception
      */
     void modifyList(ModifyModel modifyModel) throws Exception;
+
+    /**
+     * Deployment Group 정보 검색
+     * @param searchModel 검색할 Deployment Group 정보
+     * @return 검색된 Deployment Group 정보
+     * @throws Exception
+     */
+    List<DeploymentGroup> findList(SearchModel searchModel) throws Exception;
 }
