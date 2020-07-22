@@ -1,12 +1,11 @@
 package com.example.atom.controller;
 
-import com.example.atom.model.DeleteModel;
-import com.example.atom.model.DeploymentGroup;
-import com.example.atom.model.ModifyModel;
-import com.example.atom.model.SearchModel;
+import com.example.atom.model.*;
 import com.example.atom.svc.DeploymentService;
+import com.example.atom.svc.PagingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,6 +24,9 @@ public class DeploymentController {
      */
     @Autowired
     DeploymentService deploymentService;
+
+    @Autowired
+    PagingService pagingService;
 
     /**
      * Ajax 요청에 따른 Deployment Group 리스트를 반환
@@ -75,6 +77,14 @@ public class DeploymentController {
     @RequestMapping(value="/findList", method = RequestMethod.POST)
     public @ResponseBody List<DeploymentGroup> findList(@RequestBody SearchModel searchModel) throws Exception {
         return deploymentService.findList(searchModel);
+    }
+
+    @RequestMapping(value="/pageList", method = RequestMethod.GET)
+    public String pageList(Model model, int curPage) throws Exception {
+        PagingModel pagingModel = new PagingModel();
+        pagingModel = pagingService.createPaging(curPage);
+        model.addAttribute("pagingModel", pagingModel);
+        return "/deployment_list";
     }
 
 }

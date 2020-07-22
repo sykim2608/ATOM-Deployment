@@ -13,6 +13,8 @@
   <script src="../../scripts/atom/datetimepicker.js"></script>
   <!-- multiselect -->
   <script src="../../scripts/atom/bootstrap-multiselect.js"></script>
+  <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script> -->
   <!-- 공통작성 -->
   <script src="../../scripts/atom/ui_common.js"></script>
   <link rel="shortcut icon" type="image/x-icon" href="../../images/atom/favicon.ico">
@@ -35,8 +37,9 @@
           }                              
           var cnt = $("#selectLine option:checked").val();
           var total = 0;
-          for(var i=0 in data) {
-            if(i == cnt) break;
+
+          for(var i=(cnt*${pagingModel.curPageNo-1}); i<data.length; i++) {
+            if(total == cnt) break;
             total++;
             var dates = moment(data[i].date).utc().format('MM.DD.YYYY HH:mm:ss');
             $("#tbodyList").append("<tr><td><input type=" + '"' + "checkbox" + '"'+ "id=" + '"' + "checkData" + '"' + "value="+ '"' + data[i].serviceId + '"' + "></td><td>"+data[i].serviceId+"</td><td>"+data[i].serviceName+"</td><td>"+data[i].architecture+"</td><td>"+data[i].description+"</td><td><span class="+'"'+"state color_03"+'"'+">" +data[i].status+"</td><td>"+dates+"</td></tr>");
@@ -57,10 +60,25 @@
         var dates = moment(new Date()).utc(+8);           
         var dataFormat = {serviceId : id, serviceName : name, architecture : archi, description : desc, status : "Success", date : dates};
         $("#tbodyEmpty").remove();
-        $("#tbodyList").append("<tr><td><input type=" + '"' + "checkbox" + '"'+ "id=" + '"' + "checkData" + '"' + "value="+ '"' + id + '"' + "></td><td>"+id+"</td><td>"+name+"</td><td>"+archi+"</td><td>"+desc+"</td><td><span class="+'"'+"state color_03"+'"'+">" +"Success"+"</td><td>"+moment(dates).utc().format('MM.DD.YYYY HH:mm:ss')+"</td></tr>");
-        var total = $("#spanData").text().replace("rows","")*1 + 1;
-        $("#spanData").remove();
-        $("#total_result").append("<span id =" + '"' + "spanData" + '"'+ "class=" + '"value"' + "><em>" + total + "</em>rows</span>");     
+        var total = $("#spanData").text().replace("rows","")*1 + 1; 
+        var cnt = $("#selectLine option:checked").val();
+
+        //paging 처리 
+        if(${pagingModel.totalListNum} % cnt != 0 && ${pagingModel.curPageNo} == ${pagingModel.lastPageNo}) {
+          $("#tbodyList").append("<tr><td><input type=" + '"' + "checkbox" + '"'+ "id=" + '"' + "checkData" + '"' + "value="+ '"' + id + '"' + "></td><td>"+id+"</td><td>"+name+"</td><td>"+archi+"</td><td>"+desc+"</td><td><span class="+'"'+"state color_03"+'"'+">" +"Success"+"</td><td>"+moment(dates).utc().format('MM.DD.YYYY HH:mm:ss')+"</td></tr>");
+          //var total = $("#spanData").text().replace("rows","")*1 + 1;        
+          //$("#spanData").remove();
+          $("#spanData").remove();
+          $("#total_result").append("<span id =" + '"' + "spanData" + '"'+ "class=" + '"value"' + "><em>" + total + "</em>rows</span>");
+        }
+        else if(${pagingModel.totalListNum} % cnt == 0 && ${pagingModel.curPageNo}){
+          $("#pagingClass").empty();
+          $("#pagingClass").append("<ul>");
+          for(var i = ${pagingModel.startPageNo}; i<=${pagingModel.endPageNo}+1; i++) {
+            $("#pagingClass").append("<li><a href=" + '"' + "pageList?curPage=" + i + '"' + ">" + i + "</li>");
+          }
+          $("#pagingClass").append("</ul>");
+        }  
 
         $.ajax({
           type: "POST",
@@ -125,8 +143,8 @@
             } 
             var cnt = $("#selectLine option:checked").val();
             var total = 0;
-            for(var i=0 in data) {
-              if(i == cnt) break;
+            for(var i=(cnt*${pagingModel.curPageNo-1}); i<=data.length; i++) {
+            if(total == cnt) break;
               total++;
               var dates = moment(data[i].date).utc().format('MM.DD.YYYY HH:mm:ss');
               $("#tbodyList").append("<tr><td><input type=" + '"' + "checkbox" + '"'+ "id=" + '"' + "checkData" + '"' + "value="+ '"' + data[i].serviceId + '"' + "></td><td>"+data[i].serviceId+"</td><td>"+data[i].serviceName+"</td><td>"+data[i].architecture+"</td><td>"+data[i].description+"</td><td><span class="+'"'+"state color_03"+'"'+">" +data[i].status+"</td><td>"+dates+"</td></tr>");
@@ -196,7 +214,6 @@
       var svcName = document.getElementById("searchName").value;
       var Arc = document.getElementById("searchArc").value;
       var dataFormat = {serviceId : svcId, serviceName : svcName, architecture : Arc, status : "Success"};
-
       $.ajax({
         type: "POST",
         contentType: "application/json",
@@ -220,9 +237,9 @@
           alert("error");
         }
       });
-
     }
   </script>
+
 
 </head>
 <body>
@@ -286,8 +303,8 @@
           </div>
           <div class="cell nth_02 option_box">
             <div class="select type_03 line">
-              <select id="selectLine" name="myselect">
-                <option value="10">10 Line</option>
+              <select class="selectpicker" id="selectLine" >
+                <option value="10" >10 Line</option>
                 <option value="50">50 Line</option>
                 <option value="100">100 Line</option>
               </select>
@@ -346,17 +363,33 @@
           </div>
         </div>
         <div class="cont_footer type_01">
-          <div class="paging">
+          <div class="paging" id = "pagingClass">
             <ul>
-            <li><a href="#none" class="btn first"><span class="hidden">First</span></a></li>
-            <li><a href="#none" class="btn before"><span class="hidden">Before</span></a></li>
-            <li><a href="#none">1</a></li>
-            <li><a href="#none">2</a></li>
+              <!-- ***** Paging 처리 ***** -->
+              <c:if test="${pagingModel.prevPage}">
+                <li><a href="pageList?curPage=${pagingModel.startPageNo}-1" class="btn first">Before</a></li>
+              </c:if>
+
+              <c:forEach begin="${pagingModel.startPageNo}" end="${pagingModel.endPageNo}" var = "index">
+                <li>
+                  <a href="pageList?curPage=${index}">${index}</a>
+                </li>
+              </c:forEach>
+
+              <c:if test="${pagingModel.nextPage}">
+                <li><a href="pageList?curPage=${pagingModel.endPageNo}+1" class="btn first">Next</a></li>
+              </c:if>
+
+
+            
+            <!-- <li><a href="#none" class="btn before"><span class="hidden">Before</span></a></li> -->
+            <!-- <li><a href="#none">1</a></li>
+            <li><a href="/pageList?curPage=1">2</a></li>
             <li><a href="#none">3</a></li>
             <li><a href="#none" class="on">4</a></li>
-            <li><a href="#none">5</a></li>
-            <li><a href="#none" class="btn next"><span class="hidden">Next</span></a></li>
-            <li><a href="#none" class="btn last"><span class="hidden">Last</span></a></li>
+            <li><a href="#none">5</a></li> -->
+            <!-- <li><a href="#none" class="btn next"><span class="hidden">Next</span></a></li>
+            <li><a href="#none" class="btn last"><span class="hidden">Last</span></a></li> -->
             </ul>
           </div>
           <div class="btn_area">

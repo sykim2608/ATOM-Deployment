@@ -2,7 +2,10 @@ com\example\atom\Application.class
 com\example\atom\svc\DeploymentServiceImpl.class
 com\example\atom\config\DatabaseConfig.class
 com\example\atom\model\DeploymentGroup.class
+com\example\atom\svc\PagingService.class
+com\example\atom\svc\PagingServiceImpl.class
 com\example\atom\controller\DeploymentController.class
+com\example\atom\model\PagingModel.class
 com\example\atom\ServletInitializer.class
 com\example\atom\model\ModifyModel.class
 com\example\atom\model\SearchModel.class

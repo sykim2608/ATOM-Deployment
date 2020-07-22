@@ -5,13 +5,15 @@
 
     <select id="getList" resultType="com.example.atom.model.DeploymentGroup">
         SELECT
-            SERVICEID
-            , SERVICENAME
-            , ARCHITECTURE
-            , DESCRIPTION
-            , STATUS
-            , DATE
-        FROM  DEPLOYMENT
+                SERVICEID
+                , SERVICENAME
+                , ARCHITECTURE
+                , DESCRIPTION
+                , STATUS
+                , DATE
+          FROM  DEPLOYMENT
+         ORDER  BY
+          DATE
     </select>
     <delete id="deleteList" parameterType="String">
         DELETE
@@ -55,6 +57,8 @@
            AND  SERVICENAME  = #{serviceName}
            AND  ARCHITECTURE = #{architecture}
            AND  STATUS       = #{status}
+         ORDER  BY
+          DATE
     </select>
 
 </mapper>
