@@ -13,7 +13,7 @@ public class PagingServiceImpl implements PagingService {
     DeploymentService deploymentService;
 
     @Override
-    public PagingModel createPaging(Integer curPageNo) throws Exception {
+    public PagingModel createPaging(Integer curPageNo, int pageSize) throws Exception {
         PagingModel pagingModel = new PagingModel();
 
         if(curPageNo == null) {
@@ -23,8 +23,8 @@ public class PagingServiceImpl implements PagingService {
             pagingModel.setCurPageNo(curPageNo);
         }
 
-        //page Size 처리 (수정해야함)**
-        pagingModel.setPageSize(10);
+        //page Size 처리
+        pagingModel.setPageSize(pageSize);
 
         //total Count 계산
         List<DeploymentGroup> list = deploymentService.getList();
@@ -47,17 +47,22 @@ public class PagingServiceImpl implements PagingService {
         pagingModel.setLastPageNo(lastPage);
 
         //End Page 계산
-        int num = (((pagingModel.getCurPageNo() - 1) / 5) + 1) * 5;
-        if(pagingModel.getLastPageNo() < 5) {
-            pagingModel.setEndPageNo(pagingModel.getLastPageNo());
-        }
-        else if(pagingModel.getLastPageNo() > num) {
-            pagingModel.setEndPageNo(num);
+        int blockLast = (((pagingModel.getCurPageNo() - 1) / 5) + 1) * 5;
+        if(pagingModel.getLastPageNo() > blockLast) {
+            pagingModel.setEndPageNo(blockLast);
         }
         else {
             pagingModel.setEndPageNo(pagingModel.getLastPageNo());
         }
-
+//        if(pagingModel.getLastPageNo() < 5) {
+//            pagingModel.setEndPageNo(pagingModel.getLastPageNo());
+//        }
+//        else if(pagingModel.getLastPageNo() > num) {
+//            pagingModel.setEndPageNo(num);
+//        }
+//        else {
+//            pagingModel.setEndPageNo(pagingModel.getLastPageNo());
+//        }
 
         //이전 페이지 확인
         if(pagingModel.getStartPageNo() > 5 ) {

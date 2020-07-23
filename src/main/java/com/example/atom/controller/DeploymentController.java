@@ -80,9 +80,9 @@ public class DeploymentController {
     }
 
     @RequestMapping(value="/pageList", method = RequestMethod.GET)
-    public String pageList(Model model, int curPage) throws Exception {
+    public String pageList(Model model, int curPage, int pageSize) throws Exception {
         PagingModel pagingModel = new PagingModel();
-        pagingModel = pagingService.createPaging(curPage);
+        pagingModel = pagingService.createPaging(curPage, pageSize);
         model.addAttribute("pagingModel", pagingModel);
         return "/deployment_list";
     }

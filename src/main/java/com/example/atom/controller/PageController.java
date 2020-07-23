@@ -26,7 +26,7 @@ public class PageController {
     @RequestMapping("/deployment")
     public String deploymentList(Model model) throws Exception {
         PagingModel pagingModel = new PagingModel();
-        pagingModel = pagingService.createPaging(1);
+        pagingModel = pagingService.createPaging(1, 10);
         model.addAttribute("pagingModel", pagingModel);
         return "deployment_list";
     }

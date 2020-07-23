@@ -1,6 +1,12 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@page import="com.example.atom.model.PagingModel"%>
+<%
+  PagingModel pagingModel = (PagingModel)request.getAttribute("pagingModel");
+  
+  int curPageSize = pagingModel.getPageSize();
+%>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -13,15 +19,16 @@
   <script src="../../scripts/atom/datetimepicker.js"></script>
   <!-- multiselect -->
   <script src="../../scripts/atom/bootstrap-multiselect.js"></script>
-  <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script> -->
   <!-- 공통작성 -->
   <script src="../../scripts/atom/ui_common.js"></script>
   <link rel="shortcut icon" type="image/x-icon" href="../../images/atom/favicon.ico">
   <link rel="stylesheet" href="../../styles/atom/style.css">
   <!-- bootstrap 4.5-->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+<!--<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script> -->
+ <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 
   <!-- 첫 페이지 로딩 시 -->
   <script>
@@ -38,7 +45,7 @@
           var cnt = $("#selectLine option:checked").val();
           var total = 0;
 
-          for(var i=(cnt*${pagingModel.curPageNo-1}); i<data.length; i++) {
+          for(var i=cnt*(${pagingModel.curPageNo}-1); i<data.length; i++) {
             if(total == cnt) break;
             total++;
             var dates = moment(data[i].date).utc().format('MM.DD.YYYY HH:mm:ss');
@@ -62,24 +69,25 @@
         $("#tbodyEmpty").remove();
         var total = $("#spanData").text().replace("rows","")*1 + 1; 
         var cnt = $("#selectLine option:checked").val();
+        //페이지 리로드 
+        location.reload();
 
-        //paging 처리 
-        if(${pagingModel.totalListNum} % cnt != 0 && ${pagingModel.curPageNo} == ${pagingModel.lastPageNo}) {
-          $("#tbodyList").append("<tr><td><input type=" + '"' + "checkbox" + '"'+ "id=" + '"' + "checkData" + '"' + "value="+ '"' + id + '"' + "></td><td>"+id+"</td><td>"+name+"</td><td>"+archi+"</td><td>"+desc+"</td><td><span class="+'"'+"state color_03"+'"'+">" +"Success"+"</td><td>"+moment(dates).utc().format('MM.DD.YYYY HH:mm:ss')+"</td></tr>");
-          //var total = $("#spanData").text().replace("rows","")*1 + 1;        
-          //$("#spanData").remove();
-          $("#spanData").remove();
-          $("#total_result").append("<span id =" + '"' + "spanData" + '"'+ "class=" + '"value"' + "><em>" + total + "</em>rows</span>");
-        }
-        else if(${pagingModel.totalListNum} % cnt == 0 && ${pagingModel.curPageNo}){
-          $("#pagingClass").empty();
-          $("#pagingClass").append("<ul>");
-          for(var i = ${pagingModel.startPageNo}; i<=${pagingModel.endPageNo}+1; i++) {
-            $("#pagingClass").append("<li><a href=" + '"' + "pageList?curPage=" + i + '"' + ">" + i + "</li>");
-          }
-          $("#pagingClass").append("</ul>");
-        }  
-
+        /*현재 페이지의 테이블 및 페이징 처리*/
+        //현재 페이지가 마지막 페이지고, Total List가 Select Line 수보다 적으면 tr 추가 
+        // if((total-1) % cnt != 0 && ${pagingModel.curPageNo} == ${pagingModel.lastPageNo}) {
+        //   $("#tbodyList").append("<tr><td><input type=" + '"' + "checkbox" + '"'+ "id=" + '"' + "checkData" + '"' + "value="+ '"' + id + '"' + "></td><td>"+id+"</td><td>"+name+"</td><td>"+archi+"</td><td>"+desc+"</td><td><span class="+'"'+"state color_03"+'"'+">" +"Success"+"</td><td>"+moment(dates).utc().format('MM.DD.YYYY HH:mm:ss')+"</td></tr>");
+        //   $("#spanData").remove();
+        //   $("#total_result").append("<span id =" + '"' + "spanData" + '"'+ "class=" + '"value"' + "><em>" + total + "</em>rows</span>");
+        // }
+        //현재 페이지가 마지막 페이지고, Total List가 Select Line 수와 같으면 페이징 인덱스 추가 
+        // else if((total-1) % cnt == 0 && ${pagingModel.curPageNo} == ${pagingModel.lastPageNo}){
+        //   $("#pagingClass").empty();
+        //   $("#pagingClass").append("<ul>");
+        //   for(var i = ${pagingModel.startPageNo}; i<=${pagingModel.endPageNo}+1; i++) {
+        //     $("#pagingClass").append("<li><a href=" + '"' + "pageList?curPage=" + i + '"' + ">" + i + "</li>");
+        //   }
+        //   $("#pagingClass").append("</ul>");
+        // }  
         $.ajax({
           type: "POST",
           contentType: "application/json",
@@ -106,13 +114,13 @@
         var archi = document.getElementById("modifyArch").value;
         var dataFormat = {serviceId : id, serviceName : name, architecture : archi, description : desc};
 
-        //화면 업데이트 
-        var modifyValue = $('input[id=checkData]:checked');
-        var tr = modifyValue.parent().parent();
-        var dates = tr.children().eq(6).text();        
-        tr.empty();
-        tr.append("<td><input type=" + '"' + "checkbox" + '"' + "id=" + '"' + "checkData" + '"' + "value="+ '"' + id + '"' + "></td><td>"+id+"</td><td>"+name+"</td><td>"+archi+"</td><td>"+desc+"</td><td><span class="+'"'+"state color_03"+'"'+">" +"Success"+"</td><td>"+dates+"</td>");
-
+        //화면 업데이트
+        location.reload(); 
+        // var modifyValue = $('input[id=checkData]:checked');
+        // var tr = modifyValue.parent().parent();
+        // var dates = tr.children().eq(6).text();        
+        // tr.empty();
+        // tr.append("<td><input type=" + '"' + "checkbox" + '"' + "id=" + '"' + "checkData" + '"' + "value="+ '"' + id + '"' + "></td><td>"+id+"</td><td>"+name+"</td><td>"+archi+"</td><td>"+desc+"</td><td><span class="+'"'+"state color_03"+'"'+">" +"Success"+"</td><td>"+dates+"</td>");
         $.ajax({
           type: "POST",
           contentType: "application/json",
@@ -123,7 +131,6 @@
           }
         });
        });
-
     });
   </script>
 
@@ -133,6 +140,7 @@
       $("#selectLine").change(function() {
         $("#tbodyList").empty();
         $(".value").remove();
+        alert();
         $.ajax({
           type:"GET",
           url: "/getList",
@@ -143,8 +151,9 @@
             } 
             var cnt = $("#selectLine option:checked").val();
             var total = 0;
-            for(var i=(cnt*${pagingModel.curPageNo-1}); i<=data.length; i++) {
+            for(var i=cnt*(${pagingModel.curPageNo}-1); i<data.length; i++) {
             if(total == cnt) break;
+            //alert(i);
               total++;
               var dates = moment(data[i].date).utc().format('MM.DD.YYYY HH:mm:ss');
               $("#tbodyList").append("<tr><td><input type=" + '"' + "checkbox" + '"'+ "id=" + '"' + "checkData" + '"' + "value="+ '"' + data[i].serviceId + '"' + "></td><td>"+data[i].serviceId+"</td><td>"+data[i].serviceName+"</td><td>"+data[i].architecture+"</td><td>"+data[i].description+"</td><td><span class="+'"'+"state color_03"+'"'+">" +data[i].status+"</td><td>"+dates+"</td></tr>");
@@ -167,10 +176,17 @@
       var dataFormat = {deploymentId : obj.val()};
       var result = confirm(obj.val() + "를 삭제하시겠습니까?");
       if(result) {
-        tr.remove(); 
+        //삭제 후 현재 페이지에 데이터가 없을 경우 "There is no data." 표시 
         var total = $("#spanData").text().replace("rows","") - 1;
-        $("#spanData").remove();
-        $("#total_result").append("<span id =" + '"' + "spanData" + '"'+ "class=" + '"value"' + "><em>" + total + "</em>rows</span>");
+        if(total == 0) {
+          tr.remove(); 
+          $("#spanData").remove();
+          $("#total_result").append("<span id =" + '"' + "spanData" + '"'+ "class=" + '"value"' + "><em>" + total + "</em>rows</span>");
+            $("#tbodyList").append("<div class=no_data id=" + '"tbodyEmpty"'+"> There is no Data.</div>");
+        }
+        else {
+          location.reload();
+        }
         $.ajax({
           type: "POST",
           contentType: "application/json",
@@ -237,9 +253,13 @@
           alert("error");
         }
       });
+      //페이징 없애기 
+      $("#pagingClass").empty();
+      $("#pagingClass").append("<ul>");
+      $("#pagingClass").append("<li><a href=" + '"' + "pageList?curPage=" + 1 + '"' + ">" + 1 + "</li>");
+      $("#pagingClass").append("</ul>");
     }
   </script>
-
 
 </head>
 <body>
@@ -280,7 +300,7 @@
                   <th>Status</th>
                   <td>
                     <div class="select type_01 s">
-                      <select>
+                      <select class="form-control">
                         <option value="1">All</option>
                         <option value="2">Creating</option>
                         <option value="3">In Progress</option>
@@ -303,11 +323,12 @@
           </div>
           <div class="cell nth_02 option_box">
             <div class="select type_03 line">
-              <select class="selectpicker" id="selectLine" >
-                <option value="10" >10 Line</option>
+              <select class="form-control" id="selectLine" onchange="selectChange(this.value)">
+                <option value="10">10 Line</option>
                 <option value="50">50 Line</option>
                 <option value="100">100 Line</option>
               </select>
+
             </div>
             <button class="btn icon type_03 s" type="button" title="Download">
               <i class="download"></i>Download
@@ -367,19 +388,19 @@
             <ul>
               <!-- ***** Paging 처리 ***** -->
               <c:if test="${pagingModel.prevPage}">
-                <li><a href="pageList?curPage=${pagingModel.startPageNo}-1" class="btn first">Before</a></li>
+              <!-- var cnt = $("#selectLine option:checked").val(); -->
+                <li><a href="pageList?curPage=${pagingModel.startPageNo}-1&pageSize=10" class="btn first">Before</a></li>
               </c:if>
 
               <c:forEach begin="${pagingModel.startPageNo}" end="${pagingModel.endPageNo}" var = "index">
                 <li>
-                  <a href="pageList?curPage=${index}">${index}</a>
+                  <a href="pageList?curPage=${index}&pageSize=<%=curPageSize%>">${index}</a>
                 </li>
               </c:forEach>
 
               <c:if test="${pagingModel.nextPage}">
-                <li><a href="pageList?curPage=${pagingModel.endPageNo}+1" class="btn first">Next</a></li>
+                <li><a href="pageList?curPage=${pagingModel.endPageNo}+1&pageSize=10" class="btn first">Next</a></li>
               </c:if>
-
 
             
             <!-- <li><a href="#none" class="btn before"><span class="hidden">Before</span></a></li> -->
