@@ -1,7 +1,7 @@
 package com.example.atom.model;
 
 /**
- * DeploymentGroup 삭제 Ajax 요청에 대한 Request Body 모델
+ * DeploymentGroup 삭제 Ajax 요청에 대한 Request Body 모델.
  * @author sykim@ntels.com
  */
 public class DeleteModel {

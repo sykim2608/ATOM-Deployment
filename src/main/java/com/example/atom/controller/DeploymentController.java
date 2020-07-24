@@ -79,12 +79,29 @@ public class DeploymentController {
         return deploymentService.findList(searchModel);
     }
 
+    /**
+     * 현재 웹 페이지의 페이징을 처리
+     * @param model
+     * @param curPage 현재 페이지 번호
+     * @return "deployment_list.jsp" 페이지 반환
+     * @throws Exception
+     */
     @RequestMapping(value="/pageList", method = RequestMethod.GET)
-    public String pageList(Model model, int curPage, int pageSize) throws Exception {
+    public String pageList(Model model, int curPage) throws Exception {
         PagingModel pagingModel = new PagingModel();
-        pagingModel = pagingService.createPaging(curPage, pageSize);
+        pagingModel = pagingService.createPaging(curPage);
         model.addAttribute("pagingModel", pagingModel);
         return "/deployment_list";
+    }
+
+    /**
+     * 웹 페이지 내 DeploymentGroup 리스트 출력 수 변경
+     * @param pageSize select box에서 선택된 select list 수
+     * @throws Exception
+     */
+    @RequestMapping(value="/modifyPageSize", method = RequestMethod.GET)
+    public @ResponseBody void modifyPageSize(Model model, int pageSize) throws Exception {
+        PageSizeModel.pageSize = pageSize;
     }
 
 }

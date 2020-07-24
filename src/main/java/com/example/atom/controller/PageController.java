@@ -1,5 +1,6 @@
 package com.example.atom.controller;
 
+import com.example.atom.model.PageSizeModel;
 import com.example.atom.model.PagingModel;
 import com.example.atom.svc.PagingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,18 +16,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class PageController {
 
+    /**
+     * Paging Service
+     */
     @Autowired
     PagingService pagingService;
 
     /**
      * deployment_list.jsp 페이지로 이동한다.
-     * @return "deployment_list"
+     * @return "deployment_list" 페이지 반환
      * @throws Exception
      */
     @RequestMapping("/deployment")
     public String deploymentList(Model model) throws Exception {
         PagingModel pagingModel = new PagingModel();
-        pagingModel = pagingService.createPaging(1, 10);
+        pagingModel = pagingService.createPaging(1);
         model.addAttribute("pagingModel", pagingModel);
         return "deployment_list";
     }

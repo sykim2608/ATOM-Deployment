@@ -2,6 +2,7 @@ package com.example.atom.dao;
 
 import com.example.atom.model.DeploymentGroup;
 import com.example.atom.model.ModifyModel;
+import com.example.atom.model.PageSizeModel;
 import com.example.atom.model.SearchModel;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
@@ -49,4 +50,5 @@ public interface DeployMapper {
      * @throws Exception
      */
     List<DeploymentGroup> findList(SearchModel searchModel) throws Exception;
+
 }

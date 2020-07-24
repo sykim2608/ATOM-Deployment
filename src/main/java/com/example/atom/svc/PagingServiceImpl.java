@@ -1,19 +1,33 @@
 package com.example.atom.svc;
 
+import com.example.atom.dao.DeployMapper;
 import com.example.atom.model.DeploymentGroup;
+import com.example.atom.model.PageSizeModel;
 import com.example.atom.model.PagingModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
+/**
+ * 페이징 처리 클래스.
+ * @author sykim@ntels.com
+ */
 @Service
 public class PagingServiceImpl implements PagingService {
+    /**
+     * DeployMapper
+     */
+    @Autowired
+    private DeployMapper mapper;
 
+    /**
+     * Deployment Service
+     */
     @Autowired
     DeploymentService deploymentService;
 
     @Override
-    public PagingModel createPaging(Integer curPageNo, int pageSize) throws Exception {
+    public PagingModel createPaging(Integer curPageNo) throws Exception {
         PagingModel pagingModel = new PagingModel();
 
         if(curPageNo == null) {
@@ -24,13 +38,13 @@ public class PagingServiceImpl implements PagingService {
         }
 
         //page Size 처리
+        int pageSize = PageSizeModel.pageSize;
         pagingModel.setPageSize(pageSize);
 
         //total Count 계산
         List<DeploymentGroup> list = deploymentService.getList();
         int totalCnt = list.size();
         pagingModel.setTotalListNum(totalCnt);
-
 
         //Start Page 계산
         int startPage = ((pagingModel.getCurPageNo() - 1) / 5) * 5 + 1;
@@ -54,15 +68,6 @@ public class PagingServiceImpl implements PagingService {
         else {
             pagingModel.setEndPageNo(pagingModel.getLastPageNo());
         }
-//        if(pagingModel.getLastPageNo() < 5) {
-//            pagingModel.setEndPageNo(pagingModel.getLastPageNo());
-//        }
-//        else if(pagingModel.getLastPageNo() > num) {
-//            pagingModel.setEndPageNo(num);
-//        }
-//        else {
-//            pagingModel.setEndPageNo(pagingModel.getLastPageNo());
-//        }
 
         //이전 페이지 확인
         if(pagingModel.getStartPageNo() > 5 ) {
@@ -79,7 +84,7 @@ public class PagingServiceImpl implements PagingService {
         else {
             pagingModel.setNextPage(false);
         }
-
         return pagingModel;
     }
+
 }

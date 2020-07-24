@@ -1,12 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@page import="com.example.atom.model.PagingModel"%>
-<%
-  PagingModel pagingModel = (PagingModel)request.getAttribute("pagingModel");
-  
-  int curPageSize = pagingModel.getPageSize();
-%>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -44,7 +38,6 @@
           }                              
           var cnt = $("#selectLine option:checked").val();
           var total = 0;
-
           for(var i=cnt*(${pagingModel.curPageNo}-1); i<data.length; i++) {
             if(total == cnt) break;
             total++;
@@ -138,27 +131,12 @@
   <script>
     $(function() {
       $("#selectLine").change(function() {
-        $("#tbodyList").empty();
-        $(".value").remove();
-        alert();
+        var pageSizes = $("#selectLine option:checked").val();
         $.ajax({
           type:"GET",
-          url: "/getList",
-          dataType: "json",
-          success: function(data) {
-            if(data.length < 1) {
-              $("#tbodyList").append("<div class=no_data id=" + '"tbodyEmpty"'+"> There is no Data.</div>");
-            } 
-            var cnt = $("#selectLine option:checked").val();
-            var total = 0;
-            for(var i=cnt*(${pagingModel.curPageNo}-1); i<data.length; i++) {
-            if(total == cnt) break;
-            //alert(i);
-              total++;
-              var dates = moment(data[i].date).utc().format('MM.DD.YYYY HH:mm:ss');
-              $("#tbodyList").append("<tr><td><input type=" + '"' + "checkbox" + '"'+ "id=" + '"' + "checkData" + '"' + "value="+ '"' + data[i].serviceId + '"' + "></td><td>"+data[i].serviceId+"</td><td>"+data[i].serviceName+"</td><td>"+data[i].architecture+"</td><td>"+data[i].description+"</td><td><span class="+'"'+"state color_03"+'"'+">" +data[i].status+"</td><td>"+dates+"</td></tr>");
-            }
-            $("#total_result").append("<span id =" + '"' + "spanData" + '"'+ "class=" + '"value"' + "><em>" + total + "</em>rows</span>");
+          url: "/modifyPageSize?pageSize=" + pageSizes,
+          success: function() {
+            location.reload();
            },
            error: function() {
             alert("error");
@@ -253,7 +231,7 @@
           alert("error");
         }
       });
-      //페이징 없애기 
+      //페이징 제거  
       $("#pagingClass").empty();
       $("#pagingClass").append("<ul>");
       $("#pagingClass").append("<li><a href=" + '"' + "pageList?curPage=" + 1 + '"' + ">" + 1 + "</li>");
@@ -323,10 +301,10 @@
           </div>
           <div class="cell nth_02 option_box">
             <div class="select type_03 line">
-              <select class="form-control" id="selectLine" onchange="selectChange(this.value)">
-                <option value="10">10 Line</option>
-                <option value="50">50 Line</option>
-                <option value="100">100 Line</option>
+              <select class="form-control" id="selectLine" name="selectLine">
+                <option value="10" <c:if test="${pagingModel.pageSize eq '10'}">selected</c:if>>10 Line</option>
+                <option value="50" <c:if test="${pagingModel.pageSize eq '50'}">selected</c:if>>50 Line</option>
+                <option value="100"<c:if test="${pagingModel.pageSize eq '100'}">selected</c:if>>100 Line</option>
               </select>
 
             </div>
@@ -388,29 +366,18 @@
             <ul>
               <!-- ***** Paging 처리 ***** -->
               <c:if test="${pagingModel.prevPage}">
-              <!-- var cnt = $("#selectLine option:checked").val(); -->
-                <li><a href="pageList?curPage=${pagingModel.startPageNo}-1&pageSize=10" class="btn first">Before</a></li>
+                <li><a href="pageList?curPage=${pagingModel.startPageNo}-1" class="btn first">Before</a></li>
               </c:if>
 
               <c:forEach begin="${pagingModel.startPageNo}" end="${pagingModel.endPageNo}" var = "index">
                 <li>
-                  <a href="pageList?curPage=${index}&pageSize=<%=curPageSize%>">${index}</a>
+                  <a href="pageList?curPage=${index}">${index}</a>
                 </li>
               </c:forEach>
 
               <c:if test="${pagingModel.nextPage}">
-                <li><a href="pageList?curPage=${pagingModel.endPageNo}+1&pageSize=10" class="btn first">Next</a></li>
+                <li><a href="pageList?curPage=${pagingModel.endPageNo}+1" class="btn first">Next</a></li>
               </c:if>
-
-            
-            <!-- <li><a href="#none" class="btn before"><span class="hidden">Before</span></a></li> -->
-            <!-- <li><a href="#none">1</a></li>
-            <li><a href="/pageList?curPage=1">2</a></li>
-            <li><a href="#none">3</a></li>
-            <li><a href="#none" class="on">4</a></li>
-            <li><a href="#none">5</a></li> -->
-            <!-- <li><a href="#none" class="btn next"><span class="hidden">Next</span></a></li>
-            <li><a href="#none" class="btn last"><span class="hidden">Last</span></a></li> -->
             </ul>
           </div>
           <div class="btn_area">

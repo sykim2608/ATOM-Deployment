@@ -1,15 +1,47 @@
 package com.example.atom.model;
 
+/**
+ * 웹 페이징 처리를 위한 페이징 모델.
+ * @author sykim@ntels.com
+ */
 public class PagingModel {
+    /**
+     * 총 Deployment Group 리스트 수
+     */
     private int totalListNum;
+    /**
+     * 모든 페이지 중 첫 번째 페이지 번호
+     */
     private int firstPageNo;
+    /**
+     * 모든 페이지 중 마지막 페이지 번호
+     */
     private int lastPageNo;
+    /**
+     * 현재 페이지가 속한 block의 첫번째 페이지 번호
+     */
     private int startPageNo = 1;
+    /**
+     * 현재 페이지가 속한 block의 마지막 페이지 번호
+     */
     private int endPageNo;
+    /**
+     * 현재 페이지 번호
+     */
     private Integer curPageNo;
+    /**
+     * 현재 페이지에 출력될 데이터 리스트 수
+     */
     private int pageSize;
+    /**
+     * 현재 속한 페이지의 이전 페이지 block
+     */
     private boolean prevPage;
+    /**
+     * 현재 속한 페이지의 다음 페이지 block
+     */
     private boolean nextPage;
+
 
     public boolean isPrevPage() {
         return prevPage;
