@@ -366,7 +366,7 @@
             <ul>
               <!-- ***** Paging 처리 ***** -->
               <c:if test="${pagingModel.prevPage}">
-                <li><a href="pageList?curPage=${pagingModel.startPageNo}-1" class="btn first">Before</a></li>
+                <li><a href="pageList?curPage=${pagingModel.prevPageIndex}" class="btn first">Before</a></li>
               </c:if>
 
               <c:forEach begin="${pagingModel.startPageNo}" end="${pagingModel.endPageNo}" var = "index">
@@ -376,7 +376,7 @@
               </c:forEach>
 
               <c:if test="${pagingModel.nextPage}">
-                <li><a href="pageList?curPage=${pagingModel.endPageNo}+1" class="btn first">Next</a></li>
+                <li><a href="pageList?curPage=${pagingModel.nextPageIndex}" class="btn first">Next</a></li>
               </c:if>
             </ul>
           </div>

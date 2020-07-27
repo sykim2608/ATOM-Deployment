@@ -9,6 +9,7 @@ com\example\atom\model\PagingModel.class
 com\example\atom\ServletInitializer.class
 com\example\atom\model\ModifyModel.class
 com\example\atom\model\SearchModel.class
+com\example\atom\model\PageSizeModel.class
 com\example\atom\controller\PageController.class
 com\example\atom\svc\DeploymentService.class
 com\example\atom\model\DeleteModel.class

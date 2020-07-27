@@ -72,6 +72,7 @@ public class PagingServiceImpl implements PagingService {
         //이전 페이지 확인
         if(pagingModel.getStartPageNo() > 5 ) {
             pagingModel.setPrevPage(true);
+            pagingModel.setPrevPageIndex(pagingModel.getStartPageNo() - 1);
         }
         else {
             pagingModel.setPrevPage(false);
@@ -80,6 +81,7 @@ public class PagingServiceImpl implements PagingService {
         //다음 페이지 확인
         if(pagingModel.getEndPageNo() < pagingModel.getLastPageNo()) {
             pagingModel.setNextPage(true);
+            pagingModel.setNextPageIndex(pagingModel.getEndPageNo()+1);
         }
         else {
             pagingModel.setNextPage(false);

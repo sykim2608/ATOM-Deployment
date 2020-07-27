@@ -41,6 +41,15 @@ public class PagingModel {
      * 현재 속한 페이지의 다음 페이지 block
      */
     private boolean nextPage;
+    /**
+     * 이전 페이지 block의 첫번째 페이지 번호
+     */
+    private int prevPageIndex;
+
+    /**
+     * 다음 페이지 block의 첫번쨰 페이지 번호
+     */
+    private int nextPageIndex;
 
 
     public boolean isPrevPage() {
@@ -115,7 +124,20 @@ public class PagingModel {
         this.pageSize = pageSize;
     }
 
+    public int getPrevPageIndex() {
+        return prevPageIndex;
+    }
 
+    public void setPrevPageIndex(int prevPageIndex) {
+        this.prevPageIndex = prevPageIndex;
+    }
 
+    public int getNextPageIndex() {
+        return nextPageIndex;
+    }
+
+    public void setNextPageIndex(int nextPageIndex) {
+        this.nextPageIndex = nextPageIndex;
+    }
 
 }
